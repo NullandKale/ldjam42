@@ -67,7 +67,11 @@
     <Compile Include="Assets\Pooling\ListPool.cs" />
     <Compile Include="Assets\Pooling\MonoPool.cs" />
     <Compile Include="Assets\Pooling\QueuePool.cs" />
-    <Compile Include="Assets\Test.cs" />
+    <Compile Include="Assets\Scripts\LevelGeneration\Level.cs" />
+    <Compile Include="Assets\Scripts\LevelGeneration\LevelGenerator.cs" />
+    <Compile Include="Assets\Scripts\utils\Csv.cs" />
+    <Compile Include="Assets\Scripts\utils\utils.cs" />
+    <Compile Include="Assets\Scripts\utils\vectors.cs" />
     <Compile Include="Assets\Weapon.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/Dilly/Documents/ldjam42/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
