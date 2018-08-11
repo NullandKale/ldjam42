@@ -215,26 +215,13 @@ GameObject:
   - component: {fileID: 1052857225}
   - component: {fileID: 1052857224}
   - component: {fileID: 1052857223}
-  - component: {fileID: 1052857222}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1052857222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1052857221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fc8d57120712b24c99b02379c80ad66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 3
 --- !u!50 &1052857223
 Rigidbody2D:
   serializedVersion: 4
@@ -254,7 +241,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &1052857224
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -281,6 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc8d57120712b24c99b02379c80ad66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Weapon: {fileID: 11400000, guid: 5dd8e25f9f84ea742a907a160948e7ad, type: 2}
   Speed: 3
 --- !u!212 &1052857226
 SpriteRenderer:

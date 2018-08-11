@@ -47,6 +47,6 @@ public class PlayerController : MonoBehaviour
     {
         Movement();
         SetRotation();
-        Weapon.Shoot();
+        Weapon.Shoot(transform);
     }
 }
