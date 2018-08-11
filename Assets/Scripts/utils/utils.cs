@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 
 public class utils
@@ -17,11 +16,10 @@ public class utils
     public static void clearInput()
     {
         int counter = 0;
-        while(Console.Read() != 0)
+        while (Console.Read() != 0)
         {
-            if(counter > 1000)
+            if (counter > 1000)
             {
-                Log.e("Took too long to remove chars from console buffer");
                 break;
             }
 
@@ -35,10 +33,13 @@ public class utils
         {
             case direction.up:
                 return vector2.up;
+
             case direction.down:
                 return vector2.down;
+
             case direction.left:
                 return vector2.left;
+
             case direction.right:
                 return vector2.right;
         }
@@ -88,7 +89,6 @@ public class utils
         if (!bool.TryParse(input, out x))
         {
             x = false;
-            Log.e("Bool failed to parse!");
         }
 
         return x;
@@ -96,7 +96,7 @@ public class utils
 
     public static int getIntInRange(int min, int max)
     {
-        if(rng == null)
+        if (rng == null)
         {
             rng = new Random(RandomSeed);
         }
@@ -106,7 +106,7 @@ public class utils
 
     public static int getCenteredInt(int change, int center)
     {
-        if(rng == null)
+        if (rng == null)
         {
             rng = new Random(RandomSeed);
         }
@@ -127,6 +127,21 @@ public class utils
     public static string ConsoleColorToString(ConsoleColor c)
     {
         return ColorCodeToInt(c).ToString();
+    }
+
+    public static float[,] CreateMap(float val, int width, int height)
+    {
+        float[,] toReturn = new float[width, height];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                toReturn[x, y] = val;
+            }
+        }
+
+        return toReturn;
     }
 
     public static float[,] normalizeMap(float[,] map)
@@ -156,7 +171,7 @@ public class utils
         {
             for (int x = 0; x < map.GetLength(0); x++)
             {
-                reMapped[x,y] = Remap(map[x, y], min, max, 0, 1);
+                reMapped[x, y] = Remap(map[x, y], min, max, 0, 1);
             }
         }
 
@@ -195,7 +210,7 @@ public class utils
                 currentPos.x = x;
                 currentPos.y = y;
 
-                if(currentPos.dist(zero) > range)
+                if (currentPos.dist(zero) > range)
                 {
                     reMapped[x, y] = 1;
                 }
@@ -203,7 +218,7 @@ public class utils
                 {
                     reMapped[x, y] = map[x, y] - lowerAmount;
 
-                    if(reMapped[x,y] < 0)
+                    if (reMapped[x, y] < 0)
                     {
                         reMapped[x, y] = 0;
                     }
@@ -222,7 +237,7 @@ public class utils
         {
             for (int x = 0; x < map.GetLength(0); x++)
             {
-                if(map[x,y] < toReturn)
+                if (map[x, y] < toReturn)
                 {
                     toReturn = map[x, y];
                 }
@@ -258,153 +273,177 @@ public class utils
         return new vector2(x, y);
     }
 
-    public static Bitmap makeBitmap(float[,] array)
+    public static bool isInRange(int val, int max)
     {
-        Bitmap bitmap = new Bitmap(array.GetLength(0), array.GetLength(1));
-
-        for (int y = 0; y < array.GetLength(1); y++)
-        {
-            for (int x = 0; x < array.GetLength(0); x++)
-            {
-                int value = (int)Remap(array[x, y], 0, 1, 0, 255);
-                if(value < 0)
-                {
-                    value = 0;
-                }
-                bitmap.SetPixel(x, y, Color.FromArgb(255, value, value, value));
-            }
-        }
-
-        return bitmap;
+        return val >= 0 && val < max;
     }
 
-    public static Bitmap makeBitmap(float[,] r, float[,] b, float[,] g)
+    public static bool isInRange(int val, int min, int max)
     {
-        Bitmap bitmap = new Bitmap(r.GetLength(0), r.GetLength(1));
-
-        for (int y = 0; y < r.GetLength(1); y++)
-        {
-            for (int x = 0; x < r.GetLength(0); x++)
-            {
-                int red = (int)Remap(r[x, y], 0, 1, 0, 255);
-                int blue = (int)Remap(b[x, y], 0, 1, 0, 255);
-                int green = (int)Remap(g[x, y], 0, 1, 0, 255);
-
-                if (red < 0)
-                {
-                    red = 0;
-                }
-
-                if (blue < 0)
-                {
-                    blue = 0;
-                }
-
-                if (green < 0)
-                {
-                    green = 0;
-                }
-
-                bitmap.SetPixel(x, y, Color.FromArgb(255, red, green, blue));
-            }
-        }
-
-        return bitmap;
+        return val >= min && val < max;
     }
+
+    //public static Bitmap makeBitmap(float[,] array)
+    //{
+    //    Bitmap bitmap = new Bitmap(array.GetLength(0), array.GetLength(1));
+
+    //    for (int y = 0; y < array.GetLength(1); y++)
+    //    {
+    //        for (int x = 0; x < array.GetLength(0); x++)
+    //        {
+    //            int value = (int)Remap(array[x, y], 0, 1, 0, 255);
+    //            if(value < 0)
+    //            {
+    //                value = 0;
+    //            }
+    //            bitmap.SetPixel(x, y, Color.FromArgb(255, value, value, value));
+    //        }
+    //    }
+
+    //    return bitmap;
+    //}
+
+    //public static Bitmap makeBitmap(float[,] r, float[,] b, float[,] g)
+    //{
+    //    Bitmap bitmap = new Bitmap(r.GetLength(0), r.GetLength(1));
+
+    //    for (int y = 0; y < r.GetLength(1); y++)
+    //    {
+    //        for (int x = 0; x < r.GetLength(0); x++)
+    //        {
+    //            int red = (int)Remap(r[x, y], 0, 1, 0, 255);
+    //            int blue = (int)Remap(b[x, y], 0, 1, 0, 255);
+    //            int green = (int)Remap(g[x, y], 0, 1, 0, 255);
+    //            if (red < 0)
+    //            {
+    //                red = 0;
+    //            }
+
+    //            if (blue < 0)
+    //            {
+    //                blue = 0;
+    //            }
+
+    //            if (green < 0)
+    //            {
+    //                green = 0;
+    //            }
+
+    //            bitmap.SetPixel(x, y, Color.FromArgb(255, red, green, blue));
+    //        }
+    //    }
+
+    //    return bitmap;
+    //}
 
     public static ConsoleColor ConsoleColorFromString(string s)
     {
-            int f = -1;
-            if(int.TryParse(s, out f))
-            {
-                return ColorCodeFromInt(f);
-            }
-            else
-            {
-                return ConsoleColor.Black;
-            }
-            
-    }
-
-    public static Color ColorCodeToColor(ConsoleColor c)
-    {
-        switch (c)
+        int f = -1;
+        if (int.TryParse(s, out f))
         {
-            case ConsoleColor.Black:
-                return Color.Black;
-            case ConsoleColor.Blue:
-                return Color.Blue;
-            case ConsoleColor.Cyan:
-                return Color.Cyan;
-            case ConsoleColor.DarkBlue:
-                return Color.DarkBlue;
-            case ConsoleColor.DarkCyan:
-                return Color.DarkCyan;
-            case ConsoleColor.DarkGray:
-                return Color.DarkGray;
-            case ConsoleColor.DarkGreen:
-                return Color.DarkGreen;
-            case ConsoleColor.DarkMagenta:
-                return Color.DarkMagenta;
-            case ConsoleColor.DarkRed:
-                return Color.DarkRed;
-            case ConsoleColor.DarkYellow:
-                return Color.SandyBrown;
-            case ConsoleColor.Gray:
-                return Color.Gray;
-            case ConsoleColor.Green:
-                return Color.Green;
-            case ConsoleColor.Magenta:
-                return Color.Magenta;
-            case ConsoleColor.Red:
-                return Color.Red;
-            case ConsoleColor.White:
-                return Color.White;
-            case ConsoleColor.Yellow:
-                return Color.Yellow;
-            default:
-                return Color.MediumAquamarine;
+            return ColorCodeFromInt(f);
+        }
+        else
+        {
+            return ConsoleColor.Black;
         }
     }
+
+    //public static Color ColorCodeToColor(ConsoleColor c)
+    //{
+    //    switch (c)
+    //    {
+    //        case ConsoleColor.Black:
+    //            return Color.Black;
+    //        case ConsoleColor.Blue:
+    //            return Color.Blue;
+    //        case ConsoleColor.Cyan:
+    //            return Color.Cyan;
+    //        case ConsoleColor.DarkBlue:
+    //            return Color.DarkBlue;
+    //        case ConsoleColor.DarkCyan:
+    //            return Color.DarkCyan;
+    //        case ConsoleColor.DarkGray:
+    //            return Color.DarkGray;
+    //        case ConsoleColor.DarkGreen:
+    //            return Color.DarkGreen;
+    //        case ConsoleColor.DarkMagenta:
+    //            return Color.DarkMagenta;
+    //        case ConsoleColor.DarkRed:
+    //            return Color.DarkRed;
+    //        case ConsoleColor.DarkYellow:
+    //            return Color.SandyBrown;
+    //        case ConsoleColor.Gray:
+    //            return Color.Gray;
+    //        case ConsoleColor.Green:
+    //            return Color.Green;
+    //        case ConsoleColor.Magenta:
+    //            return Color.Magenta;
+    //        case ConsoleColor.Red:
+    //            return Color.Red;
+    //        case ConsoleColor.White:
+    //            return Color.White;
+    //        case ConsoleColor.Yellow:
+    //            return Color.Yellow;
+    //        default:
+    //            return Color.MediumAquamarine;
+    //    }
+    //}
 
     private static int ColorCodeToInt(ConsoleColor c)
     {
         switch (c)
         {
             case ConsoleColor.Black:
-            return 0;
+                return 0;
+
             case ConsoleColor.Blue:
-            return 1;
+                return 1;
+
             case ConsoleColor.Cyan:
-            return 2;
+                return 2;
+
             case ConsoleColor.DarkBlue:
-            return 3;
+                return 3;
+
             case ConsoleColor.DarkCyan:
-            return 4;
+                return 4;
+
             case ConsoleColor.DarkGray:
-            return 5;
+                return 5;
+
             case ConsoleColor.DarkGreen:
-            return 6;
+                return 6;
+
             case ConsoleColor.DarkMagenta:
-            return 7;
+                return 7;
+
             case ConsoleColor.DarkRed:
-            return 8;
+                return 8;
+
             case ConsoleColor.DarkYellow:
-            return 9;
+                return 9;
+
             case ConsoleColor.Gray:
-            return 10;
+                return 10;
+
             case ConsoleColor.Green:
-            return 11;
+                return 11;
+
             case ConsoleColor.Magenta:
-            return 12;
+                return 12;
+
             case ConsoleColor.Red:
-            return 13;
+                return 13;
+
             case ConsoleColor.White:
-            return 14;
+                return 14;
+
             case ConsoleColor.Yellow:
-            return 15;
+                return 15;
+
             default:
-            return -1;
+                return -1;
         }
     }
 
@@ -413,39 +452,55 @@ public class utils
         switch (i)
         {
             case 0:
-            return ConsoleColor.Black;
+                return ConsoleColor.Black;
+
             case 1:
-            return ConsoleColor.Blue;
+                return ConsoleColor.Blue;
+
             case 2:
-            return ConsoleColor.Cyan;
+                return ConsoleColor.Cyan;
+
             case 3:
-            return ConsoleColor.DarkBlue;
+                return ConsoleColor.DarkBlue;
+
             case 4:
-            return ConsoleColor.DarkCyan;
+                return ConsoleColor.DarkCyan;
+
             case 5:
-            return ConsoleColor.DarkGray;
+                return ConsoleColor.DarkGray;
+
             case 6:
-            return ConsoleColor.DarkGreen;
+                return ConsoleColor.DarkGreen;
+
             case 7:
-            return ConsoleColor.DarkMagenta;
+                return ConsoleColor.DarkMagenta;
+
             case 8:
-            return ConsoleColor.DarkRed;
+                return ConsoleColor.DarkRed;
+
             case 9:
-            return ConsoleColor.DarkYellow;
+                return ConsoleColor.DarkYellow;
+
             case 10:
-            return ConsoleColor.Gray;
+                return ConsoleColor.Gray;
+
             case 11:
-            return ConsoleColor.Green;
+                return ConsoleColor.Green;
+
             case 12:
-            return ConsoleColor.Magenta;
+                return ConsoleColor.Magenta;
+
             case 13:
-            return ConsoleColor.Red;
+                return ConsoleColor.Red;
+
             case 14:
-            return ConsoleColor.White;
+                return ConsoleColor.White;
+
             case 15:
-            return ConsoleColor.Yellow;
+                return ConsoleColor.Yellow;
+
             default:
-            return ConsoleColor.Black;
+                return ConsoleColor.Black;
         }
     }
 
@@ -466,85 +521,13 @@ public class utils
         string s = Console.ReadLine();
         int toReturn;
 
-        while(!int.TryParse(s, out toReturn))
+        while (!int.TryParse(s, out toReturn))
         {
-         	Console.WriteLine("Invalid Try Again: ");
+            Console.WriteLine("Invalid Try Again: ");
             Console.Write(message);
             s = Console.ReadLine();
         }
         return toReturn;
-    }
-}
-
-
-
-public static class Log
-{
-    public static LogMode currentMode = LogMode.ERROR;
-    public static bool doLogFile = true;
-    
-    public static void d(string message)
-    {
-        if((int)currentMode >= (int)LogMode.DEBUG)
-        {
-            write(message);
-        }
-    }
-
-    public static void v(string message)
-    {
-        if((int)currentMode >= (int)LogMode.VERBOSE)
-        {
-            write(message);
-        }
-    }
-
-    public static void e(string message)
-    {
-        if((int)currentMode >= (int)LogMode.ERROR)
-        {
-            write(message);
-        }
-    }
-
-    private static void write(string message)
-    {
-        if(doLogFile)
-        {
-            string path = world.Program.loadedWorldPath + "LOGFILE.txt";
-            // This text is added only once to the file.
-            if (!File.Exists(path))
-            {
-                // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(path))
-                {
-                    sw.WriteLine(message);
-                }
-            }
-            else
-            {
-                using (StreamWriter sw = File.AppendText(path))
-                {
-                    sw.WriteLine(message);
-                }
-            }
-        }
-        else
-        {
-            Console.WriteLine(message);
-        }
-    }
-    
-    public static void setLogMode(LogMode l)
-    {
-        currentMode = l;
-    }
-
-    public enum LogMode
-    {
-        ERROR = 0,
-        DEBUG = 1,
-        VERBOSE = 2
     }
 }
 
@@ -728,7 +711,6 @@ namespace Simplex
             // The result is scaled to return values in the interval [-1,1].
             return 40.0f * (n0 + n1 + n2); // TODO: The scale factor is preliminary!
         }
-
 
         internal static float Generate(float x, float y, float z)
         {
