@@ -18,9 +18,11 @@ public class LevelGenerator
         this.roomCount = roomCount;
     }
 
+    public Tile[,] tiles = null;
+
     public Texture2D generateTexture(float scale, GenerationType genType)
     {
-        Tile[,] tiles = null;
+        tiles = null;
 
         switch (genType)
         {
@@ -36,7 +38,71 @@ public class LevelGenerator
                 tiles = noisesToTiles(noise);
                 break;
         }
+
         return fillTexture(tiles);
+    }
+
+    private Tile[,] noisesToTiles(float[,] noise)
+    {
+        Tile[,] tiles = new Tile[sizeTiles.x, sizeTiles.y];
+
+        for (int x = 0; x < sizeTiles.x; x++)
+        {
+            for (int y = 0; y < sizeTiles.y; y++)
+            {
+                tiles[x, y] = noiseToTile(noise[x, y]);
+            }
+        }
+
+        return tiles;
+    }
+
+    private Tile noiseToTile(float noise)
+    {
+        if (noise <= 0)
+        {
+            return Tile.Floor;
+        }
+        else
+        {
+            return Tile.Hole;
+        }
+    }
+
+    private Texture2D fillTexture(Tile[,] tiles)
+    {
+        Texture2D toReturn = new Texture2D(sizePixels.x, sizePixels.y);
+        toReturn.filterMode = FilterMode.Point;
+
+        for (int x = 0; x < sizePixels.x; x++)
+        {
+            for (int y = 0; y < sizePixels.y; y++)
+            {
+                vector4 workingPos = vector4.getSplit(new vector2(x, y), pixelPerTile);
+                toReturn.SetPixel(x, y, getColorFromTile(tiles[workingPos.i.x, workingPos.i.y], workingPos.j));
+            }
+        }
+
+        toReturn.Apply();
+
+        return toReturn;
+    }
+
+    private Color getColorFromTile(Tile t, vector2 pos)
+    {
+        switch (t)
+        {
+            case Tile.Energy:
+                return Color.cyan;
+            case Tile.Floor:
+                return Color.green;
+            case Tile.Hole:
+                return Color.black;
+            case Tile.Wall:
+                return Color.red;
+        }
+
+        return Color.clear;
     }
 
     private Tile[,] generateRooms(int roomCount)
@@ -118,7 +184,7 @@ public class LevelGenerator
         for (int i = 0; i < clearAreas.Count; i++)
         {
             List<vector2> workingArea = clearAreas[i];
-            vector4 toAdd = findClosestRelatives(clearAreas, workingArea, map);
+            vector4 toAdd = findClosestRelatives(clearAreas, workingArea);
             if (toAdd != null)
             {
                 pathsToDraw.Add(toAdd);
@@ -136,11 +202,6 @@ public class LevelGenerator
             vector2 start = pathsToDraw[i].i;
             vector2 end = pathsToDraw[i].j;
             vector2 current = start;
-
-            if (start.x > sizeTiles.x / 2 || end.x > sizeTiles.x / 2)
-            {
-
-            }
 
             while ((current.x != end.x || current.y != end.y))
             {
@@ -171,7 +232,7 @@ public class LevelGenerator
     }
 
     //THIS IS BAD AND I FEEL BAD
-    private vector4 findClosestRelatives(List<List<vector2>> wholeAreas, List<vector2> startingArea, float[,] map)
+    private vector4 findClosestRelatives(List<List<vector2>> wholeAreas, List<vector2> startingArea)
     {
         vector2 currentBestStart = new vector2(10000, 10000);
         vector2 currentBestEnd = new vector2(10000, 10000);
@@ -179,7 +240,6 @@ public class LevelGenerator
 
         for (int i = 0; i < startingArea.Count; i++)
         {
-            map[startingArea[i].x, startingArea[i].y] = -3;
             //happens for each tile in starting area
             for (int k = 0; k < wholeAreas.Count; k++)
             {
@@ -187,12 +247,6 @@ public class LevelGenerator
                 {
                     continue;
                 }
-
-                //if (startingArea[0].x == wholeAreas[k][0].x && startingArea[0].y == wholeAreas[k][0].y)
-                //{
-                //    return null;
-                //}
-
 
                 for (int l = 0; l < wholeAreas[k].Count; l++)
                 {
@@ -219,11 +273,6 @@ public class LevelGenerator
             }
         }
 
-        if (currentBestStart.x > sizeTiles.x / 2 || currentBestEnd.x > sizeTiles.x / 2)
-        {
-
-        }
-
         return new vector4(currentBestStart, currentBestEnd);
     }
 
@@ -245,7 +294,6 @@ public class LevelGenerator
                     if (!vector2s.Contains(new vector2(a.x, a.y)))
                     {
                         vector2s.Add(new vector2(a.x, a.y));
-                        map[a.x, a.y] = -2;
                     }
 
                     if (!vector2s.Contains(new vector2(a.x - 1, a.y)) && map[a.x - 1, a.y] <= 0
@@ -283,7 +331,7 @@ public class LevelGenerator
             }
         }
 
-        return vector2s.ToList<vector2>();
+        return vector2s.ToList();
     }
 
     private vector2 findFirstClearArea(float[,] map, HashSet<vector2> clearAreas)
@@ -335,77 +383,6 @@ public class LevelGenerator
         }
 
         return toReturn;
-    }
-
-    private Tile[,] noisesToTiles(float[,] noise)
-    {
-        Tile[,] tiles = new Tile[sizeTiles.x, sizeTiles.y];
-
-        for (int x = 0; x < sizeTiles.x; x++)
-        {
-            for (int y = 0; y < sizeTiles.y; y++)
-            {
-                tiles[x, y] = noiseToTile(noise[x, y]);
-            }
-        }
-
-        return tiles;
-    }
-
-    private Tile noiseToTile(float noise)
-    {
-        if(noise > 0.5)
-        {
-            return Tile.Floor;
-        }
-        else if(noise < -1 && noise >= -2)
-        {
-            return Tile.Energy;
-        }
-        else if (noise < -2)
-        {
-            return Tile.Wall;
-        }
-        else
-        {
-            return Tile.Hole;
-        }
-    }
-
-    private Texture2D fillTexture(Tile[,] tiles)
-    {
-        Texture2D toReturn = new Texture2D(sizePixels.x, sizePixels.y);
-        toReturn.filterMode = FilterMode.Point;
-
-        for(int x = 0; x < sizePixels.x; x++)
-        {
-            for (int y = 0; y < sizePixels.y; y++)
-            {
-                vector4 workingPos = vector4.getSplit(new vector2(x, y), pixelPerTile);
-                toReturn.SetPixel(x, y, getColorFromTile(tiles[workingPos.i.x, workingPos.i.y], workingPos.j));
-            }
-        }
-
-        toReturn.Apply();
-
-        return toReturn;
-    }
-
-    private Color getColorFromTile(Tile t, vector2 pos)
-    {
-        switch (t)
-        {
-            case Tile.Energy:
-                return Color.cyan;
-            case Tile.Floor:
-                return Color.black;
-            case Tile.Hole:
-                return Color.clear;
-            case Tile.Wall:
-                return Color.red;
-        }
-
-        return Color.clear;
     }
 }
 

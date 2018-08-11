@@ -86,12 +86,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1885841753988292}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baaaab9be71cf794f9a529bd8f1c5a31, type: 3}
+  m_Script: {fileID: 11500000, guid: 91683a3383402624883584f1025e592e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 1
-  Life: 1
-  Speed: 12
+  Life: 3
+  Speed: 1
 --- !u!212 &212833906753453256
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -127,7 +127,7 @@ SpriteRenderer:
   m_SortingLayerID: -1466170009
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 4d3a8661140e64647b1846db9d347602, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1fe40a9874c1af140ba6a8c7030b9291, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
