@@ -77,7 +77,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0.005, y: -0.01}
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.16
 --- !u!114 &114530153104205492
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -91,10 +91,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KBImage: {fileID: 0}
   KBText: {fileID: 0}
-  Weapon: {fileID: 11400000, guid: 8c2f2115e1c92ef40be4a83be4e40575, type: 2}
   MaxKB: 100
   KB: 100
-  Speed: 3
+  Speed: 1
+  Projectile: {fileID: 1885841753988292, guid: 3bb7e4b0d1e9909478e50f02e685a48f, type: 2}
+  FireRate: 15
 --- !u!212 &212672536109430758
 SpriteRenderer:
   m_ObjectHideFlags: 1

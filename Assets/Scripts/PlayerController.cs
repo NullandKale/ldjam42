@@ -1,8 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public sealed class PlayerController : MonoBehaviour
 {
+    public static RemoteEvent OnShoot = new RemoteEvent();
+    public static RemoteEvent OnHit = new RemoteEvent();
+    public static RemoteEvent OnHeal = new RemoteEvent();
+    public static RemoteEvent OnEnemyHit = new RemoteEvent();
+    public static RemoteEvent OnEnemyKilled = new RemoteEvent();
+    public static RemoteEvent OnDie = new RemoteEvent();
+
     private static PlayerController instance;
 
     public static PlayerController Instance
@@ -18,15 +26,26 @@ public sealed class PlayerController : MonoBehaviour
         }
     }
 
+    private readonly List<CodeBlock> CodeBlocks = new List<CodeBlock>();
+
+    public void AddBlock(CodeBlock block)
+    {
+        block.Init();
+        CodeBlocks.Add(block);
+    }
+
     public Image KBImage;
     public Text KBText;
-
-    public Weapon Weapon;
 
     public float MaxKB = 100;
     public float KB = 100;
 
     public float Speed = 3f;
+
+    public GameObject Projectile;
+
+    public float FireRate = 1.0f;
+    private float currentFireRate;
 
     private Rigidbody2D rigidBody;
 
@@ -72,9 +91,49 @@ public sealed class PlayerController : MonoBehaviour
 
         KBImage.fillAmount = KB / MaxKB;
         KBText.text = KB + " / " + MaxKB + "KB";
+
         if (Input.GetMouseButton(0))
         {
-            Weapon.Shoot(transform);
+            Shoot(transform);
         }
+
+        if (KB <= 0)
+        {
+        }
+    }
+
+    public void Shoot(Transform trans)
+    {
+        if (currentFireRate > FireRate)
+        {
+            OnShoot.Invoke();
+            Instantiate(Projectile, trans.position, trans.rotation);
+            currentFireRate = 0;
+        }
+        else
+        {
+            currentFireRate += 1;
+        }
+    }
+}
+
+public sealed class RemoteEvent
+{
+    public delegate void OnEvent();
+
+    public event OnEvent Event;
+
+    public void Invoke()
+    {
+        if (Event != null)
+        {
+            Event.Invoke();
+        }
+    }
+
+    public static RemoteEvent operator +(RemoteEvent remoteEvent, OnEvent onEvent)
+    {
+        remoteEvent.Event += onEvent;
+        return remoteEvent;
     }
 }

@@ -36,6 +36,7 @@ public class Projectile : MonoBehaviour
         if (other.gameObject.layer == 8)
         {
             PlayerController.Instance.KB -= Damage;
+            PlayerController.OnHit.Invoke();
         }
         else if (other.gameObject.layer == 10)
         {
