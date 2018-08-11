@@ -849,6 +849,7 @@ MonoBehaviour:
   scale: 0.2
   roomCount: 500
   type: 0
+  prefab: {fileID: 1878635186449228, guid: 398bcb8caf3d7954b9c238a9599d9ccd, type: 2}
 --- !u!212 &1624258983
 SpriteRenderer:
   m_ObjectHideFlags: 0

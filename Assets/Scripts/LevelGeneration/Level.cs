@@ -8,6 +8,7 @@ public class Level : MonoBehaviour
     public float scale = 0.2f;
     public int roomCount = 10;
     public GenerationType type = GenerationType.Mix;
+    public GameObject prefab;
 
     private int textureSize;
     private SpriteRenderer r;
@@ -93,7 +94,7 @@ public class Level : MonoBehaviour
                     float xPos = j * 2.5f - tileCount - tileCount / 4.198f;
                     float yPos = i * 2.5f - tileCount - tileCount / 4.198f;
 
-                    GameObject toAdd = Instantiate(new GameObject("Collider"), new Vector3(xPos, yPos), new Quaternion(), transform);
+                    GameObject toAdd = Instantiate(prefab, new Vector3(xPos, yPos), new Quaternion(), transform);
                     toAdd.AddComponent<BoxCollider2D>().size = new Vector2(0.25f, 0.25f);
                 }
             }
