@@ -61,8 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\LevelGeneration\LevelGenerator.cs" />
     <Compile Include="Assets\Scripts\LevelGeneration\Level.cs" />
+    <Compile Include="Assets\Scripts\LevelGeneration\LevelGenerator.cs" />
     <Compile Include="Assets\Scripts\utils\Csv.cs" />
     <Compile Include="Assets\Scripts\utils\utils.cs" />
     <Compile Include="Assets\Scripts\utils\vectors.cs" />
