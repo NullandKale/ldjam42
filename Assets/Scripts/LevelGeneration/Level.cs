@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Level : MonoBehaviour
 {
@@ -20,6 +22,13 @@ public class Level : MonoBehaviour
     private int textureSize;
     private SpriteRenderer r;
     private LevelGenerator gen;
+
+    public List<Sprite> EnergyTiles;
+    public List<Sprite> WallTiles;
+    public List<Sprite> FloorTiles;
+    public List<Sprite> HoleTiles;
+    public List<Sprite> DoorUpTiles;
+    public List<Sprite> DoorDownTiles;
 
     private void Awake()
     {
@@ -102,9 +111,9 @@ public class Level : MonoBehaviour
     }
 
     private Rect spriteRect;
-
     private void addTexture()
     {
+        float multA = (float)pixelsPerTile / 64f * transform.localScale.x;
         var tex = gen.generateTexture(scale, type);
         spriteRect = new Rect(0, 0, textureSize, textureSize);
         r.sprite = Sprite.Create(tex, spriteRect, new Vector2(0.5f, 0.5f), 64, 0, SpriteMeshType.FullRect, Vector4.zero);
@@ -115,15 +124,10 @@ public class Level : MonoBehaviour
             {
                 if (isColliding(j, i) && gen.countNeighbors(j, i, Tile.Hole) <= 6)
                 {
-                    //float xPos = (utils.Remap(i, 0, gen.tiles.GetLength(0), r.bounds.min.x, r.bounds.max.x) * 1 / 2);
-                    //float yPos = (utils.Remap(j, 0, gen.tiles.GetLength(1), r.bounds.min.y, r.bounds.max.y) * 1 / 2);
-                    // 16           /   64               * 10 = 2.5
-                    //pixelsPerTile / spritePixelDensity * transform.localScale.x;
-
-                    //float xPos = j * 2.5f - tileCount - tileCount / 4.1975f;
-                    //float yPos = i * 2.5f - tileCount - tileCount / 4.1975f;
-                    float xPos = j * 2.5f - tileCount - tileCount / 4.198f;
-                    float yPos = i * 2.5f - tileCount - tileCount / 4.198f;
+                    float xPos = j * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+                    float yPos = i * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+                    xPos = ((float)Math.Round(xPos * 4, MidpointRounding.ToEven)) / 4f;
+                    yPos = ((float)Math.Round(yPos * 4, MidpointRounding.ToEven)) / 4f;
 
                     GameObject toAdd = Instantiate(prefab, new Vector3(xPos, yPos), new Quaternion(), transform);
                     toAdd.AddComponent<BoxCollider2D>().size = new Vector2(0.25f, 0.25f);
@@ -134,8 +138,11 @@ public class Level : MonoBehaviour
 
     public Vector3 tileToWorldPos(int x, int y)
     {
-        float xPos = x * 2.5f - tileCount - tileCount / 4.198f;
-        float yPos = y * 2.5f - tileCount - tileCount / 4.198f;
+        float multA = pixelsPerTile / 64f * transform.localScale.x;
+        float xPos = x * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+        float yPos = y * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+        xPos = ((float)Math.Round(xPos * 4, MidpointRounding.ToEven)) / 4f;
+        yPos = ((float)Math.Round(yPos * 4, MidpointRounding.ToEven)) / 4f;
 
         return new Vector3(xPos, yPos);
     }

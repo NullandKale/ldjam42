@@ -93,7 +93,7 @@ MonoBehaviour:
   KBText: {fileID: 0}
   MaxKB: 100
   KB: 100
-  Speed: 1
+  Speed: 2.5
   Projectile: {fileID: 1885841753988292, guid: 3bb7e4b0d1e9909478e50f02e685a48f, type: 2}
   FireRate: 15
 --- !u!212 &212672536109430758

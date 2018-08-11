@@ -82,8 +82,7 @@ public class LevelGenerator
         {
             for (int y = 0; y < sizePixels.y; y++)
             {
-                vector4 workingPos = vector4.getSplit(new vector2(x, y), pixelPerTile);
-                toReturn.SetPixel(x, y, getColorFromTile(tiles[workingPos.i.x, workingPos.i.y], workingPos.j));
+                toReturn.SetPixel(x, y, getColorFromTile(tiles[x / 16, y / 16], new vector2(x % 16, y % 16)));
             }
         }
 
@@ -92,22 +91,32 @@ public class LevelGenerator
         return toReturn;
     }
 
+    vector2HashCode hs = new vector2HashCode();
+
     private Color getColorFromTile(Tile t, vector2 pos)
     {
+        utils.setSeed(System.Math.Abs(hs.GetHashCode(pos) - 1));
+        //utils.setSeed(hs.GetHashCode(pos));
         switch (t)
         {
             case Tile.Energy:
-                return Color.cyan;
+                Sprite e = Level.currentLevel.EnergyTiles[utils.getIntInRange(0, Level.currentLevel.EnergyTiles.Count)];
+                return e.texture.GetPixel(pos.x + (int)(e.rect.x), pos.y + (int)(e.rect.y));
             case Tile.Floor:
-                return Color.grey;
+                Sprite f = Level.currentLevel.FloorTiles[utils.getIntInRange(0, Level.currentLevel.FloorTiles.Count)];
+                return f.texture.GetPixel(pos.x + (int)(f.rect.x ), pos.y + (int)(f.rect.y));
             case Tile.Hole:
-                return Color.black;
+                Sprite h = Level.currentLevel.HoleTiles[utils.getIntInRange(0, Level.currentLevel.HoleTiles.Count)];
+                return h.texture.GetPixel(pos.x + (int)(h.rect.x), pos.y + (int)(h.rect.y));
             case Tile.Wall:
-                return Color.red;
+                Sprite w = Level.currentLevel.WallTiles[utils.getIntInRange(0, Level.currentLevel.WallTiles.Count)];
+                return w.texture.GetPixel(pos.x + (int)(w.rect.x), pos.y + (int)(w.rect.y));
             case Tile.DoorUp:
-                return Color.yellow;
+                Sprite du = Level.currentLevel.DoorUpTiles[utils.getIntInRange(0, Level.currentLevel.DoorUpTiles.Count)];
+                return du.texture.GetPixel(pos.x + (int)(du.rect.x), pos.y + (int)(du.rect.y));
             case Tile.DoorDown:
-                return Color.white;
+                Sprite dd = Level.currentLevel.DoorDownTiles[utils.getIntInRange(0, Level.currentLevel.DoorDownTiles.Count)];
+                return dd.texture.GetPixel(pos.x + (int)(dd.rect.x), pos.y + (int)(dd.rect.y));
         }
 
         return Color.clear;
@@ -488,7 +497,7 @@ public struct Room
 
     public Room(int posMax, int roomSizeCenter, int roomSizeChange)
     {
-        center = utils.getCenteredVector2(new vector2(0, 0), posMax - 2);
+        center = new vector2(utils.getIntInRange(0, posMax - 2), utils.getIntInRange(0, posMax - 2));
         if(center.x <= 2)
         {
             center.x++;

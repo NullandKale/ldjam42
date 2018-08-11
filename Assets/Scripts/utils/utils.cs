@@ -67,7 +67,7 @@ public class utils
     public static void setSeed(int seed)
     {
         RandomSeed = seed;
-        Simplex.Noise.Seed = seed;
+        //Simplex.Noise.Seed = seed;
     }
 
     public static int stringToInt(string input)
