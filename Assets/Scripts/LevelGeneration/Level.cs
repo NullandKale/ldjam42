@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Level : MonoBehaviour
 {
@@ -10,13 +8,11 @@ public class Level : MonoBehaviour
     public int roomCount = 10;
     public GenerationType type = GenerationType.Mix;
 
-
     private int textureSize;
-    SpriteRenderer r;
-    LevelGenerator gen;
+    private SpriteRenderer r;
+    private LevelGenerator gen;
 
-    // Use this for initialization
-    void Start()
+    private void Start()
     {
         r = GetComponent<SpriteRenderer>();
         gen = new LevelGenerator(tileCount, tileCount, pixelsPerTile, roomCount);
@@ -24,17 +20,12 @@ public class Level : MonoBehaviour
         addTexture();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void addTexture()
     {
         Texture2D tex = gen.generateTexture(scale, type);
         Rect re = new Rect(0, 0, textureSize, textureSize);
-        r.sprite = Sprite.Create(tex, re, new Vector2(0.5f, 0.5f));
-        //gameObject.AddComponent<PolygonCollider2D>();
+        r.sprite = Sprite.Create(tex, re, new Vector2(0.5f, 0.5f), 64, 0, SpriteMeshType.FullRect, Vector4.zero);
+
+        gameObject.AddComponent<PolygonCollider2D>();
     }
 }
