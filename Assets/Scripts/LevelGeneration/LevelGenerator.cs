@@ -104,6 +104,10 @@ public class LevelGenerator
                 return Color.black;
             case Tile.Wall:
                 return Color.red;
+            case Tile.DoorUp:
+                return Color.yellow;
+            case Tile.DoorDown:
+                return Color.white;
         }
 
         return Color.clear;
@@ -459,6 +463,8 @@ public enum Tile
     Wall,
     Floor,
     Hole,
+    DoorUp,
+    DoorDown,
 }
 
 public enum GenerationType

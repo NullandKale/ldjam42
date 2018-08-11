@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 509474906}
   - component: {fileID: 509474905}
   m_Layer: 5
-  m_Name: Image
+  m_Name: KBImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -445,7 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4954a1c6fded054399694fb1ce61343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 737102941}
+  Target: {fileID: 0}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -554,11 +554,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!4 &737102941 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030,
-    type: 2}
-  m_PrefabInternal: {fileID: 1182693204}
 --- !u!1 &899224118
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,58 +624,6 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 899224118}
   m_CullTransparentMesh: 0
---- !u!1001 &1182693204
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0.37508422
-      objectReference: {fileID: 0}
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0.25272667
-      objectReference: {fileID: 0}
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4690086540786124, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114530153104205492, guid: ee7d4e5eb2d6bce419395ebdedbb6030,
-        type: 2}
-      propertyPath: KBImage
-      value: 
-      objectReference: {fileID: 509474905}
-    - target: {fileID: 114530153104205492, guid: ee7d4e5eb2d6bce419395ebdedbb6030,
-        type: 2}
-      propertyPath: KBText
-      value: 
-      objectReference: {fileID: 1927185434}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ee7d4e5eb2d6bce419395ebdedbb6030, type: 2}
-  m_IsPrefabAsset: 0
 --- !u!1 &1453431771
 GameObject:
   m_ObjectHideFlags: 0
@@ -812,7 +755,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4630346856110892, guid: 71581c2985eb72e44ba5e76d44944c5c, type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71581c2985eb72e44ba5e76d44944c5c, type: 2}
@@ -845,6 +788,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6231e1fa3671414e9d635427376102d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 1867150524071296, guid: ee7d4e5eb2d6bce419395ebdedbb6030,
+    type: 2}
   tileCount: 100
   scale: 0.2
   roomCount: 300

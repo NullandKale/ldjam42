@@ -12,6 +12,11 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
+        if (Target == null)
+        {
+            Target = GameObject.FindGameObjectWithTag("Player").transform;
+        }
+
         transform.position = Target.position + Origin;
     }
 }

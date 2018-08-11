@@ -2,6 +2,7 @@
 
 public class Level : MonoBehaviour
 {
+    public GameObject playerPrefab;
     public static Level currentLevel;
     public int tileCount = 50;
     private const int pixelsPerTile = 16;
@@ -32,6 +33,14 @@ public class Level : MonoBehaviour
         gen = new LevelGenerator(tileCount, tileCount, pixelsPerTile, roomCount);
         textureSize = tileCount * pixelsPerTile;
         addTexture();
+        SpawnPlayer();
+    }
+
+    public void SpawnPlayer()
+    {
+        Room toSpawnIn = gen.rooms[utils.getIntInRange(0, gen.rooms.Count)];
+        Vector3 playerPos = tileToWorldPos(toSpawnIn.center.x, toSpawnIn.center.y);
+        GameObject toAdd = Instantiate(playerPrefab, playerPos, new Quaternion(), transform.parent);
     }
 
     public Tile getTile(Vector2 pos)
@@ -99,5 +108,13 @@ public class Level : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Vector3 tileToWorldPos(int x, int y)
+    {
+        float xPos = x * 2.5f - tileCount - tileCount / 4.198f;
+        float yPos = y * 2.5f - tileCount - tileCount / 4.198f;
+
+        return new Vector3(xPos, yPos);
     }
 }

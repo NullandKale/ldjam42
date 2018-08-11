@@ -52,6 +52,8 @@ public sealed class PlayerController : MonoBehaviour
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        KBImage = GameObject.Find("KBImage").GetComponent<Image>();
+        KBText = GameObject.Find("KBText").GetComponent<Text>();
     }
 
     private Vector2 DirectionInput(KeyCode key, Vector2 vel)
