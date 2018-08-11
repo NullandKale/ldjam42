@@ -59,11 +59,11 @@ public class LevelGenerator
             }
         }
 
-        for(int i = 0; i < 10; i++)
+        for (int x = 0; x < sizeTiles.x; x++)
         {
-            for (int x = 0; x < sizeTiles.x; x++)
+            for (int y = 0; y < sizeTiles.y; y++)
             {
-                for (int y = 0; y < sizeTiles.y; y++)
+                if (noise[x, y] > 0.01)
                 {
                     if (countNeighbors(noise, x, y) < 3)
                     {
@@ -74,6 +74,29 @@ public class LevelGenerator
         }
 
         return noisesToTiles(noise);
+    }
+
+    private void doFloodCheck()
+    {
+        //find all areas
+        //connect closest areas together
+        //
+    }
+
+    private vector2 findFirstClearArea(float[,] map)
+    {
+        for (int x = 0; x < sizeTiles.x; x++)
+        {
+            for (int y = 0; y < sizeTiles.y; y++)
+            {
+                if(map[x,y] == 0)
+                {
+                    return new vector2(x, y);
+                }
+            }
+        }
+
+        return new vector2(-1, -1);
     }
 
     private int countNeighbors(float[,] map, int xPos, int yPos)
@@ -94,17 +117,6 @@ public class LevelGenerator
         }
 
         return toReturn;
-    }
-
-    private class Room
-    {
-        //vector2 center = utils.getCenteredVector2(new vector2(sizeTiles.x, sizeTiles.y), sizeTiles.x / 2);
-        //vector2 size = utils.getCenteredVector2(new vector2(3, 3), 2);
-
-        public Room()
-        {
-
-        }
     }
 
     private Tile[,] noisesToTiles(float[,] noise)
