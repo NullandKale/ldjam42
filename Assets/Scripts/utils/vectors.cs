@@ -50,6 +50,7 @@ public struct vector2
     public static readonly vector2 down = new vector2(0, 1);
     public static readonly vector2 left = new vector2(-1, 0);
     public static readonly vector2 right = new vector2(1, 0);
+    public static readonly vector2 negativeOne = new vector2(1, 0);
 
     public int x;
     public int y;
