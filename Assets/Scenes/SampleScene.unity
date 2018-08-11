@@ -218,10 +218,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d601259cad2d8284f8f307409b98140a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCount: 50
-  pixelsPerTile: 20
+  tileCount: 100
+  pixelsPerTile: 16
   scale: 0.1
-  roomCount: 250
+  roomCount: 500
   type: 0
 --- !u!212 &1864111998
 SpriteRenderer:

@@ -175,6 +175,28 @@ public class utils
         return reMapped;
     }
 
+    public static float[,] addBorder(float[,] map)
+    {
+        float[,] reMapped = new float[map.GetLength(0), map.GetLength(1)];
+
+        for (int y = 0; y < map.GetLength(1); y++)
+        {
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                if (x == 0 || y == 0 || map.GetLength(1) - 1 == x || map.GetLength(0) - 1 == y)
+                {
+                    reMapped[x, y] = 1;
+                }
+                else
+                {
+                    reMapped[x, y] = map[x, y];
+                }
+            }
+        }
+
+        return reMapped;
+    }
+
     public static float[,] invertMap(float[,] map)
     {
         float[,] reMapped = new float[map.GetLength(0), map.GetLength(1)];
