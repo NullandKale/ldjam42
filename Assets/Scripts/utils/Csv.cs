@@ -26,7 +26,6 @@ namespace util
             {
                 if (File.Exists(path))
                 {
-                    Log.v(path + " Exists! Loading...");
                     string text = File.ReadAllText(path);
                     lines = text.Split('\n');
 
@@ -36,13 +35,11 @@ namespace util
                     }
                     else
                     {
-                        Log.e("Error Parsing File!");
                         return null;
                     }
                 }
                 else
                 {
-                    Log.e(path + " does not exist!");
                     return null;
                 }
             }
@@ -75,7 +72,6 @@ namespace util
                 {
                     if (!float.TryParse(split[j], out data[i, j]))
                     {
-                        Log.e("Error loading : " + path);
                         return null;
                     }
                 }
