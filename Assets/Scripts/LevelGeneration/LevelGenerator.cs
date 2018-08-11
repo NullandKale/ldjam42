@@ -10,15 +10,17 @@ public class LevelGenerator
     private int pixelPerTile;
     private int roomCount;
 
+    public Tile[,] tiles = null;
+    public List<Room> rooms = null;
+
     public LevelGenerator(int heightTiles, int widthTiles, int pixelPerTile, int roomCount)
     {
+        utils.setSeed(Random.Range(int.MinValue, int.MaxValue));
         sizePixels = new vector2(widthTiles * pixelPerTile, heightTiles * pixelPerTile);
         sizeTiles = new vector2(widthTiles, heightTiles);
         this.pixelPerTile = pixelPerTile;
         this.roomCount = roomCount;
     }
-
-    public Tile[,] tiles = null;
 
     public Texture2D generateTexture(float scale, GenerationType genType)
     {
@@ -38,6 +40,8 @@ public class LevelGenerator
                 tiles = noisesToTiles(noise);
                 break;
         }
+
+        HallRemoval();
 
         return fillTexture(tiles);
     }
@@ -95,7 +99,7 @@ public class LevelGenerator
             case Tile.Energy:
                 return Color.cyan;
             case Tile.Floor:
-                return Color.cyan;
+                return Color.grey;
             case Tile.Hole:
                 return Color.black;
             case Tile.Wall:
@@ -109,35 +113,24 @@ public class LevelGenerator
     {
         float[,] noise = utils.CreateMap(1f, sizeTiles.x, sizeTiles.y);
 
+        rooms = new List<Room>();
+
         for (int i = 0; i < roomCount; i++)
         {
-            vector2 center = utils.getCenteredVector2(new vector2(0, 0), sizeTiles.x);
-            vector2 size = utils.getCenteredVector2(new vector2(4, 4), 2);
+            Room working = Room.getValidRoom(sizeTiles.x, 4, 2);
 
-            for (int x = -size.x; x < size.x; x++)
+            for (int x = -working.size.x; x < working.size.x; x++)
             {
-                for (int y = -size.y; y < size.y; y++)
+                for (int y = -working.size.y; y < working.size.y; y++)
                 {
-                    if (utils.isInRange(center.x - x, sizeTiles.x) && utils.isInRange(center.y - y, sizeTiles.y))
+                    if (utils.isInRange(working.center.x - x, sizeTiles.x) && utils.isInRange(working.center.y - y, sizeTiles.y))
                     {
-                        noise[center.x - x, center.y - y] = -1;
+                        noise[working.center.x - x, working.center.y - y] = -1;
                     }
                 }
             }
-        }
 
-        for (int x = 0; x < sizeTiles.x; x++)
-        {
-            for (int y = 0; y < sizeTiles.y; y++)
-            {
-                if (noise[x, y] > 0.01)
-                {
-                    if (countNeighbors(noise, x, y) < 3)
-                    {
-                        noise[x, y] = -1;
-                    }
-                }
-            }
+            rooms.Add(working);
         }
 
         noise = utils.addBorder(noise);
@@ -148,6 +141,60 @@ public class LevelGenerator
         }
 
         return noisesToTiles(noise);
+    }
+
+    private void HallRemoval()
+    {
+        bool run = true;
+        while(run)
+        {
+            run = false;
+            for (int x = 1; x < sizeTiles.x - 1; x++)
+            {
+                for (int y = 1; y < sizeTiles.y - 1; y++)
+                {
+                    if (tiles[x, y] == Tile.Hole)
+                    {
+                        if (countNeighbors(x, y, Tile.Hole) <= 2)
+                        {
+                            tiles[x, y] = Tile.Floor;
+                            run = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        run = true;
+        while (run)
+        {
+            run = false;
+            for (int x = 0; x < sizeTiles.x; x++)
+            {
+                for (int y = 0; y < sizeTiles.y; y++)
+                {
+                    if (tiles[x, y] == Tile.Floor)
+                    {
+                        if (countNeighbors(x, y, Tile.Floor) <= 1)
+                        {
+                            tiles[x, y] = Tile.Hole;
+                            run = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int x = 0; x < sizeTiles.x; x++)
+        {
+            for (int y = 0; y < sizeTiles.y; y++)
+            {
+                if (tiles[x, y] == Tile.Wall)
+                {
+                    tiles[x, y] = Tile.Hole;
+                }
+            }
+        }
     }
 
     private float[,] doFloodCheck(float[,] map)
@@ -384,6 +431,26 @@ public class LevelGenerator
 
         return toReturn;
     }
+
+    public int countNeighbors(int xPos, int yPos, Tile toFind)
+    {
+        int toReturn = -1;
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (utils.isInRange(xPos + x, sizeTiles.x) && utils.isInRange(yPos + y, sizeTiles.y))
+                {
+                    if (tiles[xPos + x, yPos + y] == toFind)
+                    {
+                        toReturn++;
+                    }
+                }
+            }
+        }
+
+        return toReturn;
+    }
 }
 
 public enum Tile
@@ -399,4 +466,89 @@ public enum GenerationType
     Room,
     Cave,
     Mix
+}
+
+public struct Room
+{
+    public const float AspectRatioMin = 0.5f;
+    public vector2 center;
+    public vector2 size;
+
+    public Room(vector2 center, vector2 size)
+    {
+        this.center = center;
+        this.size = size;
+    }
+
+    public Room(int posMax, int roomSizeCenter, int roomSizeChange)
+    {
+        center = utils.getCenteredVector2(new vector2(0, 0), posMax - 2);
+        if(center.x <= 2)
+        {
+            center.x++;
+        }
+        if (center.y <= 2)
+        {
+            center.y++;
+        }
+
+        size = utils.getCenteredVector2(new vector2(roomSizeCenter, roomSizeCenter), roomSizeChange);
+    }
+
+    public static Room getValidRoom(int posMax, int roomSizeCenter, int roomSizeChange)
+    {
+        Room working = new Room(posMax, roomSizeCenter, roomSizeChange);
+        for(int i = 0; i < 100; i++)
+        {
+            if(getAspectRatio(working) >= AspectRatioMin)
+            {
+                return working;
+            }
+            else
+            {
+                working = new Room(posMax, roomSizeCenter, roomSizeChange);
+            }
+        }
+
+        return working;
+    }
+
+    public static Room getValidRoomMinDist(int posMax, int roomSizeCenter, int roomSizeChange, float minSquareDist, List<Room> rooms)
+    {
+        Room working = new Room(posMax, roomSizeCenter, roomSizeChange);
+        for (int i = 0; i < 10; i++)
+        {
+            if (getAspectRatio(working) >= AspectRatioMin)
+            {
+                for(int j = 0; j < rooms.Count; j++)
+                {
+                    if (squareDist(rooms[i], working) > minSquareDist)
+                    {
+
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                return working;
+            }
+            else
+            {
+                working = new Room(posMax, roomSizeCenter, roomSizeChange);
+            }
+        }
+
+        return working;
+    }
+
+    public static float squareDist(Room a, Room b)
+    {
+        return a.center.squareDist(b.center);
+    }
+
+    public static float getAspectRatio(Room a)
+    {
+        return a.size.x / a.size.y;
+    }
 }

@@ -82,7 +82,7 @@ public class Level : MonoBehaviour
         {
             for (var j = 0; j < gen.tiles.GetLength(1); j++)
             {
-                if (isColliding(j, i))
+                if (isColliding(j, i) && gen.countNeighbors(j,i, Tile.Hole) <= 6)
                 {
                     //float xPos = (utils.Remap(i, 0, gen.tiles.GetLength(0), r.bounds.min.x, r.bounds.max.x) * 1 / 2);
                     //float yPos = (utils.Remap(j, 0, gen.tiles.GetLength(1), r.bounds.min.y, r.bounds.max.y) * 1 / 2);
