@@ -178,6 +178,28 @@ public class utils
         return reMapped;
     }
 
+    public static float[,] addBorder(float[,] map)
+    {
+        float[,] reMapped = new float[map.GetLength(0), map.GetLength(1)];
+
+        for (int y = 0; y < map.GetLength(1); y++)
+        {
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                if (x == 0 || y == 0 || map.GetLength(1) - 1 == x || map.GetLength(0) - 1 == y)
+                {
+                    reMapped[x, y] = 1;
+                }
+                else
+                {
+                    reMapped[x, y] = map[x, y];
+                }
+            }
+        }
+
+        return reMapped;
+    }
+
     public static float[,] invertMap(float[,] map)
     {
         float[,] reMapped = new float[map.GetLength(0), map.GetLength(1)];
@@ -510,7 +532,7 @@ public class utils
         return Console.ReadLine();
     }
 
-    public static float Remap(float value, float from1, float to1, float from2, float to2)
+    public static float Remap(float value, float from1, float from2, float to1, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }

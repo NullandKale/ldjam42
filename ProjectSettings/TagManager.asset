@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Level
+    uniqueID: 3406555517
+    locked: 0
   - name: Bullet
     uniqueID: 2828797287
     locked: 0

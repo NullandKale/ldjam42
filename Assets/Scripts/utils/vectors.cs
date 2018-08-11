@@ -50,6 +50,7 @@ public struct vector2
     public static readonly vector2 down = new vector2(0, 1);
     public static readonly vector2 left = new vector2(-1, 0);
     public static readonly vector2 right = new vector2(1, 0);
+    public static readonly vector2 negativeOne = new vector2(1, 0);
 
     public int x;
     public int y;
@@ -111,6 +112,11 @@ public struct vector2
     public float dist(vector2 other)
     {
         return (float)Math.Sqrt(Math.Pow(x - other.x, 2) + Math.Pow(y - other.y, 2));
+    }
+
+    public float squareDist(vector2 other)
+    {
+        return (float)(Math.Pow(x - other.x, 2) + Math.Pow(y - other.y, 2));
     }
 
     public bool Equals(vector2 X, vector2 Y)
