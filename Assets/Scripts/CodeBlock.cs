@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class CodeBlock
+﻿public class CodeBlock
 {
     public void Init()
     {

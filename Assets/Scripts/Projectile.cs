@@ -41,6 +41,7 @@ public class Projectile : MonoBehaviour
         else if (other.gameObject.layer == 10)
         {
             other.gameObject.GetComponent<Enemy>().KB -= Damage;
+            PlayerController.OnEnemyHit.Invoke();
         }
 
         Destroy(gameObject);

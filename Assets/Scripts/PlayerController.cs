@@ -115,6 +115,12 @@ public sealed class PlayerController : MonoBehaviour
             currentFireRate += 1;
         }
     }
+
+    public void Heal(int amount)
+    {
+        KB += amount;
+        OnHeal.Invoke();
+    }
 }
 
 public sealed class RemoteEvent
@@ -134,6 +140,12 @@ public sealed class RemoteEvent
     public static RemoteEvent operator +(RemoteEvent remoteEvent, OnEvent onEvent)
     {
         remoteEvent.Event += onEvent;
+        return remoteEvent;
+    }
+
+    public static RemoteEvent operator -(RemoteEvent remoteEvent, OnEvent onEvent)
+    {
+        remoteEvent.Event -= onEvent;
         return remoteEvent;
     }
 }

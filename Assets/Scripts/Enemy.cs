@@ -42,6 +42,7 @@ public class Enemy : MonoBehaviour
 
         if (KB <= 0)
         {
+            PlayerController.OnEnemyKilled.Invoke();
             Destroy(gameObject);
         }
     }
