@@ -114,6 +114,11 @@ public struct vector2
         return (float)Math.Sqrt(Math.Pow(x - other.x, 2) + Math.Pow(y - other.y, 2));
     }
 
+    public float squareDist(vector2 other)
+    {
+        return (float)(Math.Pow(x - other.x, 2) + Math.Pow(y - other.y, 2));
+    }
+
     public bool Equals(vector2 X, vector2 Y)
     {
         if (X.x == Y.x && X.y == Y.y)

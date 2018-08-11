@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LevelGenerator
@@ -51,7 +52,7 @@ public class LevelGenerator
             {
                 for (int y = -size.y; y < size.y; y++)
                 {
-                    if(utils.isInRange(center.x - x, sizeTiles.x) && utils.isInRange(center.y - y, sizeTiles.y))
+                    if (utils.isInRange(center.x - x, sizeTiles.x) && utils.isInRange(center.y - y, sizeTiles.y))
                     {
                         noise[center.x - x, center.y - y] = -1;
                     }
@@ -75,7 +76,7 @@ public class LevelGenerator
 
         noise = utils.addBorder(noise);
 
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
             noise = doFloodCheck(noise);
         }
@@ -90,31 +91,35 @@ public class LevelGenerator
         //
 
         List<List<vector2>> clearAreas = new List<List<vector2>>();
+        HashSet<vector2> isChecked = new HashSet<vector2>();
 
-        vector2 firstClearArea = findFirstClearArea(map, clearAreas);
+        vector2 firstClearArea = findFirstClearArea(map, isChecked);
 
         int counter = 0;
 
-        while(firstClearArea.x != -1)
+        while (firstClearArea.x != -1)
         {
-            clearAreas.Add(FloodFill(map, firstClearArea, sizeTiles.x));
-            firstClearArea = findFirstClearArea(map, clearAreas);
+            List<vector2> toAdd = FloodFill(map, firstClearArea, sizeTiles.x);
+
+            isChecked.UnionWith(toAdd);
+
+            clearAreas.Add(toAdd);
+            firstClearArea = findFirstClearArea(map, isChecked);
             counter++;
 
-            if(counter > 10000)
+            if (counter > 10000)
             {
-                Debug.Log("Room Generation Error");
                 break;
             }
         }
 
         List<vector4> pathsToDraw = new List<vector4>();
 
-        for(int i = 0; i < clearAreas.Count; i++)
+        for (int i = 0; i < clearAreas.Count; i++)
         {
             List<vector2> workingArea = clearAreas[i];
             vector4 toAdd = findClosestRelatives(clearAreas, workingArea, map);
-            if(toAdd != null)
+            if (toAdd != null)
             {
                 pathsToDraw.Add(toAdd);
             }
@@ -126,25 +131,25 @@ public class LevelGenerator
 
     private float[,] drawPaths(float[,] map, List<vector4> pathsToDraw)
     {
-        for(int i = 0; i < pathsToDraw.Count; i++)
+        for (int i = 0; i < pathsToDraw.Count; i++)
         {
             vector2 start = pathsToDraw[i].i;
             vector2 end = pathsToDraw[i].j;
             vector2 current = start;
 
-            if(start.x > sizeTiles.x / 2 || end.x > sizeTiles.x / 2)
+            if (start.x > sizeTiles.x / 2 || end.x > sizeTiles.x / 2)
             {
-                Debug.Log("FUCKIGN WORK");
+
             }
 
-            while((current.x != end.x || current.y != end.y))
+            while ((current.x != end.x || current.y != end.y))
             {
                 map[current.x, current.y] = -1;
-                if(current.x > end.x)
+                if (current.x > end.x)
                 {
                     current.x--;
                 }
-                else if(current.x < end.x)
+                else if (current.x < end.x)
                 {
                     current.x++;
                 }
@@ -193,17 +198,20 @@ public class LevelGenerator
                 {
                     bool test = false;
 
-                    if(startingArea[i].x > sizeTiles.x / 2 && wholeAreas[k][l].x > sizeTiles.x / 2)
+                    if (startingArea[i].x > sizeTiles.x / 2 && wholeAreas[k][l].x > sizeTiles.x / 2)
                     {
                         test = true;
                     }
-                    if (Mathf.Abs(startingArea[i].dist(wholeAreas[k][l])) < currentBestDist)
+
+                    float workingDist = Mathf.Abs(startingArea[i].squareDist(wholeAreas[k][l]));
+
+                    if (workingDist < currentBestDist)
                     {
-                        if(test)
+                        if (test)
                         {
                             //Debug.Log("FUCK");
                         }
-                        currentBestDist = Mathf.Abs(startingArea[i].dist(wholeAreas[k][l]));
+                        currentBestDist = workingDist;
                         currentBestEnd = wholeAreas[k][l];
                         currentBestStart = startingArea[i];
                     }
@@ -213,7 +221,7 @@ public class LevelGenerator
 
         if (currentBestStart.x > sizeTiles.x / 2 || currentBestEnd.x > sizeTiles.x / 2)
         {
-            Debug.Log("FUCK");
+
         }
 
         return new vector4(currentBestStart, currentBestEnd);
@@ -221,8 +229,8 @@ public class LevelGenerator
 
     public static List<vector2> FloodFill(float[,] map, vector2 pt, int worldSize)
     {
-        List<vector2> badvector2s = new List<vector2>();
-        List<vector2> vector2s = new List<vector2>();
+        HashSet<vector2> badvector2s = new HashSet<vector2>();
+        HashSet<vector2> vector2s = new HashSet<vector2>();
         Stack<vector2> pixels = new Stack<vector2>();
         pixels.Push(pt);
 
@@ -275,20 +283,20 @@ public class LevelGenerator
             }
         }
 
-        return vector2s;
+        return vector2s.ToList<vector2>();
     }
 
-    private vector2 findFirstClearArea(float[,] map, List<List<vector2>> clearAreas)
+    private vector2 findFirstClearArea(float[,] map, HashSet<vector2> clearAreas)
     {
         for (int x = 0; x < sizeTiles.x; x++)
         {
             for (int y = 0; y < sizeTiles.y; y++)
             {
-                if(map[x,y] <= 0)
+                if (map[x, y] <= 0)
                 {
                     vector2 pos = new vector2(x, y);
 
-                    if(!isAlreadyFound(pos, clearAreas))
+                    if (!isAlreadyFound(pos, clearAreas))
                     {
                         return new vector2(x, y);
                     }
@@ -296,17 +304,14 @@ public class LevelGenerator
             }
         }
 
-        return new vector2(-1,-1);
+        return new vector2(-1, -1);
     }
 
-    private bool isAlreadyFound(vector2 toCheck, List<List<vector2>> clearAreas)
+    private bool isAlreadyFound(vector2 toCheck, HashSet<vector2> clearAreas)
     {
-        for(int i = 0; i < clearAreas.Count; i++)
+        if (clearAreas.Contains(toCheck))
         {
-            if(clearAreas[i].Contains(toCheck))
-            {
-                return true;
-            }
+            return true;
         }
 
         return false;
