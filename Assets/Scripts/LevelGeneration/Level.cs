@@ -3,8 +3,14 @@
 public class Level : MonoBehaviour
 {
     public GameObject playerPrefab;
+
+    public GameObject enemyPrefab;
+
     public static Level currentLevel;
+
+    [Header("Parameters")]
     public int tileCount = 50;
+
     private const int pixelsPerTile = 16;
     public float scale = 0.2f;
     public int roomCount = 10;
@@ -33,14 +39,30 @@ public class Level : MonoBehaviour
         gen = new LevelGenerator(tileCount, tileCount, pixelsPerTile, roomCount);
         textureSize = tileCount * pixelsPerTile;
         addTexture();
-        SpawnPlayer();
+        SpawnEnemies(SpawnPlayer());
     }
 
-    public void SpawnPlayer()
+    public Room SpawnPlayer()
     {
-        Room toSpawnIn = gen.rooms[utils.getIntInRange(0, gen.rooms.Count)];
-        Vector3 playerPos = tileToWorldPos(toSpawnIn.center.x, toSpawnIn.center.y);
-        GameObject toAdd = Instantiate(playerPrefab, playerPos, new Quaternion(), transform.parent);
+        var toSpawnIn = gen.rooms[utils.getIntInRange(0, gen.rooms.Count)];
+        var playerPos = tileToWorldPos(toSpawnIn.center.x, toSpawnIn.center.y);
+        Instantiate(playerPrefab, playerPos, Quaternion.identity);
+        return toSpawnIn;
+    }
+
+    public void SpawnEnemies(Room exclude)
+    {
+        for (var i = 0; i < 100; i++)
+        {
+            var toSpawnIn = gen.rooms[utils.getIntInRange(0, gen.rooms.Count)];
+            while (toSpawnIn.center.x == exclude.center.x && toSpawnIn.center.y == exclude.center.y)
+            {
+                toSpawnIn = gen.rooms[utils.getIntInRange(0, gen.rooms.Count)];
+            }
+
+            var playerPos = tileToWorldPos(toSpawnIn.center.x, toSpawnIn.center.y);
+            Instantiate(enemyPrefab, playerPos, Quaternion.identity);
+        }
     }
 
     public Tile getTile(Vector2 pos)
@@ -91,7 +113,7 @@ public class Level : MonoBehaviour
         {
             for (var j = 0; j < gen.tiles.GetLength(1); j++)
             {
-                if (isColliding(j, i) && gen.countNeighbors(j,i, Tile.Hole) <= 6)
+                if (isColliding(j, i) && gen.countNeighbors(j, i, Tile.Hole) <= 6)
                 {
                     //float xPos = (utils.Remap(i, 0, gen.tiles.GetLength(0), r.bounds.min.x, r.bounds.max.x) * 1 / 2);
                     //float yPos = (utils.Remap(j, 0, gen.tiles.GetLength(1), r.bounds.min.y, r.bounds.max.y) * 1 / 2);

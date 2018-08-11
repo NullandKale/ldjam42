@@ -22,8 +22,8 @@ public class Enemy : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, PlayerController.Instance.transform.position) > 2)
         {
-            transform.position = Vector3.MoveTowards(transform.position, PlayerController.Instance.transform.position,
-                Speed * Time.fixedDeltaTime);
+            rigidBody.velocity = Vector3.MoveTowards(transform.position, PlayerController.Instance.transform.position,
+                Speed * Time.fixedDeltaTime).normalized;
         }
     }
 
@@ -36,9 +36,12 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        Movement();
-        SetRotation();
-        Shoot(transform);
+        if (Vector3.Distance(transform.position, PlayerController.Instance.transform.position) < 8)
+        {
+            Movement();
+            SetRotation();
+            Shoot(transform);
+        }
 
         if (KB <= 0)
         {
