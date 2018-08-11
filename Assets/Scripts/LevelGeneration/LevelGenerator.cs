@@ -95,7 +95,7 @@ public class LevelGenerator
             case Tile.Energy:
                 return Color.cyan;
             case Tile.Floor:
-                return Color.green;
+                return Color.cyan;
             case Tile.Hole:
                 return Color.black;
             case Tile.Wall:

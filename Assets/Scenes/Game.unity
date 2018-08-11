@@ -1016,11 +1016,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d601259cad2d8284f8f307409b98140a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCount: 128
-  pixelsPerTile: 16
+  tileCount: 100
   scale: 0.2
-  roomCount: 120
+  roomCount: 300
   type: 0
+  colliderPrefab: {fileID: 1878635186449228, guid: 1c778be12a9831746a6b08682f6f2739,
+    type: 2}
 --- !u!212 &1624258983
 SpriteRenderer:
   m_ObjectHideFlags: 0

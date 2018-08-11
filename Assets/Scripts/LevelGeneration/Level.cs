@@ -4,7 +4,7 @@ public class Level : MonoBehaviour
 {
     public static Level currentLevel;
     public int tileCount = 50;
-    public int pixelsPerTile = 20;
+    private const int pixelsPerTile = 16;
     public float scale = 0.2f;
     public int roomCount = 10;
     public GenerationType type = GenerationType.Mix;
@@ -79,10 +79,20 @@ public class Level : MonoBehaviour
         {
             for (int j = 0; j < gen.tiles.GetLength(1); j++)
             {
-                if(isColliding(i, j))
+                if(isColliding(j, i))
                 {
-                    int xPos = (int)utils.Remap(i, 0, gen.tiles.GetLength(0), r.bounds.min.x, r.bounds.max.x);
-                    int yPos = (int)utils.Remap(j, 0, gen.tiles.GetLength(1), r.bounds.min.y, r.bounds.max.y);
+                    //float xPos = (utils.Remap(i, 0, gen.tiles.GetLength(0), r.bounds.min.x, r.bounds.max.x) * 1 / 2);
+                    //float yPos = (utils.Remap(j, 0, gen.tiles.GetLength(1), r.bounds.min.y, r.bounds.max.y) * 1 / 2);
+                    // 16           /   64               * 10 = 2.5
+                    //pixelsPerTile / spritePixelDensity * transform.localScale.x;
+                    
+                    //float xPos = j * 2.5f - tileCount - tileCount / 4.1975f;
+                    //float yPos = i * 2.5f - tileCount - tileCount / 4.1975f;
+                    float xPos = j * 2.5f - tileCount - tileCount / 4.198f;
+                    float yPos = i * 2.5f - tileCount - tileCount / 4.198f;
+
+                    GameObject toAdd = Instantiate(colliderPrefab, new Vector3(xPos, yPos), new Quaternion(), transform);
+                    toAdd.AddComponent<BoxCollider2D>().size = new Vector2(0.25f, 0.25f);
                 }
             }
         }
