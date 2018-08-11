@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4062979298861848}
   - component: {fileID: 212833906753453256}
-  - component: {fileID: 114531254427628640}
   - component: {fileID: 58397187736129954}
   - component: {fileID: 50624122768929184}
+  - component: {fileID: 114440782619470996}
   m_Layer: 11
   m_Name: EnemyBullet
   m_TagString: Untagged
@@ -78,7 +78,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.01
---- !u!114 &114531254427628640
+--- !u!114 &114440782619470996
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,12 +86,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1885841753988292}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91683a3383402624883584f1025e592e, type: 3}
+  m_Script: {fileID: 11500000, guid: baaaab9be71cf794f9a529bd8f1c5a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 1
-  Life: 3
-  Speed: 1
+  Damage: 3
+  Life: 1
+  Speed: 8
 --- !u!212 &212833906753453256
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -135,6 +135,6 @@ SpriteRenderer:
   m_Size: {x: 0.04, y: 0.04}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
