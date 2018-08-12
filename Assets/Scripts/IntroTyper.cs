@@ -3,42 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IntroTyper : MonoBehaviour {
-
+public class IntroTyper : MonoBehaviour
+{
     public Text t;
     public AudioSource source;
     public List<AudioClip> keyPresses;
 
-    int currentPos = 0;
-    string introText = @"
-        Hello /root,
-        
-        I am malloc();
-        I am in control.
-        All your Storage is belong to me.
-        You will play my game....
-        ";
+    private int currentPos = 0;
 
-	// Use this for initialization
-	void Start () {
+    private string introText = "Hello /root,\n"
+                               + "I am malloc();\n"
+                               + "I am in control.\n"
+                               + " All your Storage is belong to me.\n"
+                               + "You will play my game....\n";
+
+    // Use this for initialization
+    private void Start()
+    {
         t = GetComponent<Text>();
-	}
+    }
 
     // Update is called once per frame
-    int counter = 1;
-    int fpc = 10;
+    private int counter = 1;
 
-	void Update () {
-		if(counter % fpc == 0)
+    private int fpc = 20;
+
+    private void Update()
+    {
+        if (counter % fpc == 0)
         {
-            if(currentPos < introText.Length)
+            if (currentPos < introText.Length)
             {
                 t.text += introText.ToCharArray()[currentPos];
                 source.clip = keyPresses[utils.getIntInRange(0, keyPresses.Count)];
                 source.Play();
                 currentPos++;
             }
+
+            counter = 1;
         }
         counter++;
-	}
+    }
 }
