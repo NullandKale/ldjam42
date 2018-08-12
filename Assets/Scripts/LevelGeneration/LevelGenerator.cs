@@ -31,10 +31,12 @@ public class LevelGenerator
             case GenerationType.Room:
                 tiles = generateRooms(roomCount);
                 break;
+
             case GenerationType.Cave:
                 float[,] noise = utils.normalizeMap(Simplex.Noise.Calc2D(sizeTiles.x, sizeTiles.y, scale));
                 tiles = noisesToTiles(noise);
                 break;
+
             case GenerationType.Mix:
                 noise = utils.normalizeMap(Simplex.Noise.Calc2D(sizeTiles.x, sizeTiles.y, scale));
                 tiles = noisesToTiles(noise);
@@ -75,14 +77,14 @@ public class LevelGenerator
 
     private Texture2D fillTexture(Tile[,] tiles)
     {
-        Texture2D toReturn = new Texture2D(sizePixels.x, sizePixels.y);
-        toReturn.filterMode = FilterMode.Point;
+        Texture2D toReturn = new Texture2D(sizePixels.x, sizePixels.y) { filterMode = FilterMode.Point };
 
         for (int x = 0; x < sizePixels.x; x++)
         {
             for (int y = 0; y < sizePixels.y; y++)
             {
-                toReturn.SetPixel(x, y, getColorFromTile(tiles[x / 16, y / 16], new vector2(x % 16, y % 16), new vector2(x / 16, y / 16)));
+                toReturn.SetPixel(x, y, getColorFromTile(tiles[x / 16, y / 16], new vector2(x % 16, y % 16),
+                    new vector2(x / 16, y / 16)));
             }
         }
 
@@ -91,31 +93,39 @@ public class LevelGenerator
         return toReturn;
     }
 
-    vector2HashCode hs = new vector2HashCode();
+    private static int Rand<T>(List<T> source)
+    {
+        return Random.Range(0, source.Count);
+    }
 
     private Color getColorFromTile(Tile t, vector2 pos, vector2 tilePos)
     {
-        utils.setSeed(System.Math.Abs(hs.GetHashCode(tilePos) - 1));
-        //utils.setSeed(hs.GetHashCode(pos));
+        Random.InitState((tilePos.x + tilePos.y + 1) * (tilePos.x + tilePos.y / 2) + tilePos.y);
+
         switch (t)
         {
             case Tile.Energy:
-                Sprite e = Level.currentLevel.EnergyTiles[utils.getIntInRange(0, Level.currentLevel.EnergyTiles.Count)];
+                Sprite e = Level.currentLevel.EnergyTiles[Rand(Level.currentLevel.EnergyTiles)];
                 return e.texture.GetPixel(pos.x + (int)(e.rect.x), pos.y + (int)(e.rect.y));
+
             case Tile.Floor:
-                Sprite f = Level.currentLevel.FloorTiles[utils.getIntInRange(0, Level.currentLevel.FloorTiles.Count)];
-                return f.texture.GetPixel(pos.x + (int)(f.rect.x ), pos.y + (int)(f.rect.y));
+                Sprite f = Level.currentLevel.FloorTiles[Rand(Level.currentLevel.FloorTiles)];
+                return f.texture.GetPixel(pos.x + (int)(f.rect.x), pos.y + (int)(f.rect.y));
+
             case Tile.Hole:
-                Sprite h = Level.currentLevel.HoleTiles[utils.getIntInRange(0, Level.currentLevel.HoleTiles.Count)];
+                Sprite h = Level.currentLevel.HoleTiles[Rand(Level.currentLevel.HoleTiles)];
                 return h.texture.GetPixel(pos.x + (int)(h.rect.x), pos.y + (int)(h.rect.y));
+
             case Tile.Wall:
-                Sprite w = Level.currentLevel.WallTiles[utils.getIntInRange(0, Level.currentLevel.WallTiles.Count)];
+                Sprite w = Level.currentLevel.WallTiles[Rand(Level.currentLevel.WallTiles)];
                 return w.texture.GetPixel(pos.x + (int)(w.rect.x), pos.y + (int)(w.rect.y));
+
             case Tile.DoorUp:
-                Sprite du = Level.currentLevel.DoorUpTiles[utils.getIntInRange(0, Level.currentLevel.DoorUpTiles.Count)];
+                Sprite du = Level.currentLevel.DoorUpTiles[Rand(Level.currentLevel.DoorUpTiles)];
                 return du.texture.GetPixel(pos.x + (int)(du.rect.x), pos.y + (int)(du.rect.y));
+
             case Tile.DoorDown:
-                Sprite dd = Level.currentLevel.DoorDownTiles[utils.getIntInRange(0, Level.currentLevel.DoorDownTiles.Count)];
+                Sprite dd = Level.currentLevel.DoorDownTiles[Rand(Level.currentLevel.DoorDownTiles)];
                 return dd.texture.GetPixel(pos.x + (int)(dd.rect.x), pos.y + (int)(dd.rect.y));
         }
 
@@ -159,7 +169,7 @@ public class LevelGenerator
     private void HallRemoval()
     {
         bool run = true;
-        while(run)
+        while (run)
         {
             run = false;
             for (int x = 1; x < sizeTiles.x - 1; x++)
@@ -252,7 +262,6 @@ public class LevelGenerator
         }
 
         return drawPaths(map, pathsToDraw);
-
     }
 
     private float[,] drawPaths(float[,] map, List<vector4> pathsToDraw)
@@ -434,7 +443,7 @@ public class LevelGenerator
             {
                 if (utils.isInRange(xPos + x, sizeTiles.x) && utils.isInRange(yPos + y, sizeTiles.y))
                 {
-                    if(map[xPos + x, yPos + y] > 0)
+                    if (map[xPos + x, yPos + y] > 0)
                     {
                         toReturn++;
                     }
@@ -498,7 +507,7 @@ public struct Room
     public Room(int posMax, int roomSizeCenter, int roomSizeChange)
     {
         center = new vector2(utils.getIntInRange(0, posMax - 2), utils.getIntInRange(0, posMax - 2));
-        if(center.x <= 2)
+        if (center.x <= 2)
         {
             center.x++;
         }
@@ -513,9 +522,9 @@ public struct Room
     public static Room getValidRoom(int posMax, int roomSizeCenter, int roomSizeChange)
     {
         Room working = new Room(posMax, roomSizeCenter, roomSizeChange);
-        for(int i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
         {
-            if(getAspectRatio(working) >= AspectRatioMin)
+            if (getAspectRatio(working) >= AspectRatioMin)
             {
                 return working;
             }
@@ -535,11 +544,10 @@ public struct Room
         {
             if (getAspectRatio(working) >= AspectRatioMin)
             {
-                for(int j = 0; j < rooms.Count; j++)
+                for (int j = 0; j < rooms.Count; j++)
                 {
                     if (squareDist(rooms[i], working) > minSquareDist)
                     {
-
                     }
                     else
                     {
