@@ -21,27 +21,25 @@ public class IntroTyper : MonoBehaviour
     private void Start()
     {
         t = GetComponent<Text>();
+        StartCoroutine(Type());
     }
 
     // Update is called once per frame
     private int counter = 1;
 
-    private int fpc = 20;
+    private int fpc = 80;
 
-    private void Update()
+    private IEnumerator Type()
     {
-        if (counter % fpc == 0)
+        while (currentPos < introText.Length)
         {
-            if (currentPos < introText.Length)
-            {
-                t.text += introText.ToCharArray()[currentPos];
-                source.clip = keyPresses[utils.getIntInRange(0, keyPresses.Count)];
-                source.Play();
-                currentPos++;
-            }
-
-            counter = 1;
+            t.text += introText.ToCharArray()[currentPos];
+            source.clip = keyPresses[utils.getIntInRange(0, keyPresses.Count)];
+            source.Play();
+            yield return new WaitForSeconds(source.clip.length);
+            currentPos++;
         }
-        counter++;
+
+        yield return 0;
     }
 }
