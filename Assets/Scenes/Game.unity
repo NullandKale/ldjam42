@@ -533,6 +533,8 @@ MonoBehaviour:
     type: 2}
   explosionPrefab: {fileID: 1960820558622352, guid: f737991adeea69b4dbeca7e32b35d824,
     type: 2}
+  popupPrefab: {fileID: 1236495346670732, guid: 08dfc436bce72c7408c75b74dd77d9c6,
+    type: 2}
   tileCount: 100
   scale: 0.2
   roomCount: 60
@@ -550,7 +552,6 @@ MonoBehaviour:
   - {fileID: 21300014, guid: e7df719aa5df76f42805f4092f2f79a9, type: 3}
   - {fileID: 21300018, guid: e7df719aa5df76f42805f4092f2f79a9, type: 3}
   - {fileID: 21300128, guid: e7df719aa5df76f42805f4092f2f79a9, type: 3}
-  - {fileID: 21300354, guid: e7df719aa5df76f42805f4092f2f79a9, type: 3}
   - {fileID: 21301792, guid: e7df719aa5df76f42805f4092f2f79a9, type: 3}
   - {fileID: 21302050, guid: e7df719aa5df76f42805f4092f2f79a9, type: 3}
   HoleTiles:

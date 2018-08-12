@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   KB: 3
-  Speed: 3
+  Speed: 3.5
   itemPrefab: {fileID: 1592492086379040, guid: 5d2c0493dd926a94fa83134c765e97f5, type: 2}
   Projectile: {fileID: 1885841753988292, guid: 00e8b8c332c69624daad3cfa9ef33516, type: 2}
   FireRate: 15

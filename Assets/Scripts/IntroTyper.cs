@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,7 +13,9 @@ public class IntroTyper : MonoBehaviour
 
     private int currentPos = 0;
 
-    private string introText = "Hello /root,\n"
+    private static string prefix = "Hello User: " + Environment.UserName + ",\n";
+
+    private string introText = prefix
                                + "I am malloc();\n"
                                + "I am in control.\n"
                                + "All your bytes are belong to me.\n"
@@ -24,6 +27,7 @@ public class IntroTyper : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+
         t = GetComponent<Text>();
         StartCoroutine(Type());
     }

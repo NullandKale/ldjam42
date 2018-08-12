@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Reflection;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Item : MonoBehaviour
 {
@@ -8,7 +11,11 @@ public class Item : MonoBehaviour
 
     private void Start()
     {
-        Block = new EnemyProjectilesExplodeOnHit();
+        Block = Level.currentLevel.getRandomCodeBlock();
+        if(Block == null)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void FixedUpdate()

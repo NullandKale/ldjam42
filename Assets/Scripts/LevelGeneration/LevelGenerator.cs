@@ -83,8 +83,8 @@ public class LevelGenerator
         {
             for (int y = 0; y < sizePixels.y; y++)
             {
-                toReturn.SetPixel(x, y, getColorFromTile(tiles[x / 16, y / 16], new vector2(x % 16, y % 16),
-                    new vector2(x / 16, y / 16)));
+                toReturn.SetPixel(x, y, getColorFromTile(tiles[x / pixelPerTile, y / pixelPerTile], new vector2(x % pixelPerTile, y % pixelPerTile),
+                    new vector2(x / pixelPerTile, y / pixelPerTile)));
             }
         }
 

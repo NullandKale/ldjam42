@@ -7,6 +7,7 @@ public class Level : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject enemyPrefab;
     public GameObject explosionPrefab;
+    public GameObject popupPrefab;
 
     public static Level currentLevel;
 
@@ -30,8 +31,11 @@ public class Level : MonoBehaviour
     public List<Sprite> DoorUpTiles;
     public List<Sprite> DoorDownTiles;
 
+    private List<CodeBlock> codeBlocks;
+
     private void Awake()
     {
+        utils.setSeed(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
         if (currentLevel == null)
         {
             currentLevel = this;
@@ -49,6 +53,45 @@ public class Level : MonoBehaviour
         textureSize = tileCount * pixelsPerTile;
         addTexture();
         SpawnEnemies(SpawnPlayer());
+    }
+
+    private void initCodeBlocks()
+    {
+        codeBlocks = new List<CodeBlock>();
+        codeBlocks.Add(new DoubleDamage());
+        codeBlocks.Add(new EnemyProjectilesExplodeOnHit());
+        codeBlocks.Add(new HealAgain());
+        //codeBlocks.Add(new Homing());
+        //codeBlocks.Add(new KnockBack());
+        //codeBlocks.Add(new ReflectDamage());
+        codeBlocks.Add(new TripleShot());
+    }
+
+    public CodeBlock getRandomCodeBlock()
+    {
+        if(codeBlocks == null)
+        {
+            initCodeBlocks();
+        }
+
+        if(codeBlocks.Count <= 0)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            CodeBlock temp = codeBlocks[utils.getIntInRange(0, codeBlocks.Count)];
+
+            if(utils.getIntInRange(0,100) <= temp.spawnChance())
+            {
+                codeBlocks.Remove(temp);
+                return temp;
+            }
+        }
+
+
+        return null;
     }
 
     public Room SpawnPlayer()

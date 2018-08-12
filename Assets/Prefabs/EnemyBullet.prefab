@@ -89,9 +89,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baaaab9be71cf794f9a529bd8f1c5a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shooter: {fileID: 0}
   Damage: 3
-  Life: 1
-  Speed: 8
+  Life: 5
+  Speed: 10
 --- !u!212 &212833906753453256
 SpriteRenderer:
   m_ObjectHideFlags: 1

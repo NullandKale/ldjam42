@@ -1,5 +1,9 @@
-﻿public class CodeBlock
+﻿[System.Serializable]
+public abstract class CodeBlock
 {
+    public abstract int spawnChance();
+    public abstract string getName();
+
     public void Init()
     {
         PlayerController.OnShoot += OnShot;

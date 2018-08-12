@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class explode : MonoBehaviour {
 
@@ -22,6 +23,11 @@ public class explode : MonoBehaviour {
     {
         if (other.gameObject.layer == 10)
         {
+            GameObject textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
+            Text text = textobj.GetComponent<DestroyAfterDelay>().text;
+            text.color = Color.red;
+            text.text = "-" + Damage + "kB";
+
             other.gameObject.GetComponent<Enemy>().KB -= Damage;
             PlayerController.OnEnemyHit.Invoke(this);
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Homing : CodeBlock
 {
     public override void OnShot(params object[] args)
@@ -23,5 +24,15 @@ public class Homing : CodeBlock
             self.AddForce(self.transform.right * 100 * Speed * Time.fixedDeltaTime, ForceMode2D.Force);
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    public override int spawnChance()
+    {
+        return 0;
+    }
+
+    public override string getName()
+    {
+        return "Homing();";
     }
 }

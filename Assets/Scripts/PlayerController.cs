@@ -31,7 +31,14 @@ public sealed class PlayerController : MonoBehaviour
     public void AddBlock(CodeBlock block)
     {
         block.Init();
-        CodeBlocks.Add(block);
+        if(block != null)
+        {
+            GameObject textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
+            Text text = textobj.GetComponent<DestroyAfterDelay>().text;
+            text.color = Color.blue;
+            text.text = "+" + block.getName();
+            CodeBlocks.Add(block);
+        }
     }
 
     public Image KBImage;
@@ -119,6 +126,11 @@ public sealed class PlayerController : MonoBehaviour
 
     public void Heal(int amount)
     {
+        GameObject textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
+        Text text = textobj.GetComponent<DestroyAfterDelay>().text;
+        text.color = Color.green;
+        text.text = "+" + amount + "kB";
+
         KB += amount;
         OnHeal.Invoke(amount);
     }
