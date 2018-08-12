@@ -10,27 +10,27 @@
         PlayerController.OnDie += OnDie;
     }
 
-    public virtual void OnShot()
+    public virtual void OnShot(params System.Object[] args)
     {
     }
 
-    public virtual void OnHit()
+    public virtual void OnHit(params System.Object[] args)
     {
     }
 
-    public virtual void OnHeal()
+    public virtual void OnHeal(params System.Object[] args)
     {
     }
 
-    public virtual void OnEnemyHit()
+    public virtual void OnEnemyHit(params System.Object[] args)
     {
     }
 
-    public virtual void OnEnemyKilled()
+    public virtual void OnEnemyKilled(params System.Object[] args)
     {
     }
 
-    public virtual void OnDie()
+    public virtual void OnDie(params System.Object[] args)
     {
     }
 }

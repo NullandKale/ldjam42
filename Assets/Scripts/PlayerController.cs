@@ -108,8 +108,7 @@ public sealed class PlayerController : MonoBehaviour
     {
         if (currentFireRate > FireRate)
         {
-            OnShoot.Invoke();
-            Instantiate(Projectile, trans.position, trans.rotation);
+            OnShoot.Invoke(Instantiate(Projectile, trans.position, trans.rotation));
             currentFireRate = 0;
         }
         else
@@ -121,21 +120,21 @@ public sealed class PlayerController : MonoBehaviour
     public void Heal(int amount)
     {
         KB += amount;
-        OnHeal.Invoke();
+        OnHeal.Invoke(amount);
     }
 }
 
 public sealed class RemoteEvent
 {
-    public delegate void OnEvent();
+    public delegate void OnEvent(params System.Object[] args);
 
     public event OnEvent Event;
 
-    public void Invoke()
+    public void Invoke(params System.Object[] args)
     {
         if (Event != null)
         {
-            Event.Invoke();
+            Event.Invoke(args);
         }
     }
 

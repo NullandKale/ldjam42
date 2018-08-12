@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
 
     private Rigidbody2D rigidBody;
 
+    public GameObject itemPrefab;
     public GameObject Projectile;
 
     public float FireRate = 1.0f;
@@ -45,8 +46,23 @@ public class Enemy : MonoBehaviour
 
         if (KB <= 0)
         {
-            PlayerController.OnEnemyKilled.Invoke();
-            Destroy(gameObject);
+            die();
+        }
+    }
+
+    private void die()
+    {
+        spawnItem();
+        PlayerController.OnEnemyKilled.Invoke();
+        Destroy(gameObject);
+    }
+
+    public int spawnChance = 20;
+    private void spawnItem()
+    {
+        if(utils.getIntInRange(1, 101) < spawnChance)
+        {
+            Instantiate(itemPrefab, transform.position, Quaternion.identity);
         }
     }
 
@@ -54,7 +70,7 @@ public class Enemy : MonoBehaviour
     {
         if (currentFireRate > FireRate)
         {
-            Instantiate(Projectile, trans.position, trans.rotation);
+            Instantiate(Projectile, trans.position, trans.rotation).GetComponent<Projectile>().shooter = gameObject;
             currentFireRate = 0;
         }
         else

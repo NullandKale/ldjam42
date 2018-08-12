@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class IntroTyper : MonoBehaviour
@@ -14,8 +15,11 @@ public class IntroTyper : MonoBehaviour
     private string introText = "Hello /root,\n"
                                + "I am malloc();\n"
                                + "I am in control.\n"
-                               + " All your Storage is belong to me.\n"
-                               + "You will play my game....\n";
+                               + "All your bytes are belong to me.\n"
+                               + "If you want your precious bytes back.\n"
+                               + "You will play my game.\n"
+                               + "Kill my minions and get back your bytes.\n"
+                               + "But beware, the end is just the beginning.\n";
 
     // Use this for initialization
     private void Start()
@@ -24,22 +28,23 @@ public class IntroTyper : MonoBehaviour
         StartCoroutine(Type());
     }
 
-    // Update is called once per frame
-    private int counter = 1;
-
-    private int fpc = 80;
-
     private IEnumerator Type()
     {
+        //source.pitch *= 1.4f;
         while (currentPos < introText.Length)
         {
             t.text += introText.ToCharArray()[currentPos];
             source.clip = keyPresses[utils.getIntInRange(0, keyPresses.Count)];
+            //source.Play();
+            //yield return new WaitForSeconds(source.clip.length * (1f / 1.6f));
+            source.pitch *= 1.03f;
             source.Play();
-            yield return new WaitForSeconds(source.clip.length);
+            yield return new WaitForSeconds(source.clip.length / source.pitch);
             currentPos++;
         }
 
-        yield return 0;
+        yield return new WaitForSeconds(3);
+
+        SceneManager.LoadScene("Game");
     }
 }

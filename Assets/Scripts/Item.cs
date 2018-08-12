@@ -8,7 +8,7 @@ public class Item : MonoBehaviour
 
     private void Start()
     {
-        Block = new CodeBlock();
+        Block = new EnemyProjectilesExplodeOnHit();
     }
 
     private void FixedUpdate()

@@ -2,6 +2,7 @@
 
 public class Projectile : MonoBehaviour
 {
+    public GameObject shooter;
     public float Damage = 1f;
     public float Life = 3f;
     public float Speed = 1f;
@@ -36,12 +37,12 @@ public class Projectile : MonoBehaviour
         if (other.gameObject.layer == 8)
         {
             PlayerController.Instance.KB -= Damage;
-            PlayerController.OnHit.Invoke();
+            PlayerController.OnHit.Invoke(this);
         }
         else if (other.gameObject.layer == 10)
         {
             other.gameObject.GetComponent<Enemy>().KB -= Damage;
-            PlayerController.OnEnemyHit.Invoke();
+            PlayerController.OnEnemyHit.Invoke(this);
         }
 
         Destroy(gameObject);

@@ -5,8 +5,8 @@ using UnityEngine;
 public class Level : MonoBehaviour
 {
     public GameObject playerPrefab;
-
     public GameObject enemyPrefab;
+    public GameObject explosionPrefab;
 
     public static Level currentLevel;
 
@@ -59,6 +59,25 @@ public class Level : MonoBehaviour
         return toSpawnIn;
     }
 
+    public GameObject getClosestEnemy(Vector3 pos)
+    {
+        int enemy = 0;
+        float minDist = 1000000000;
+        for(int i = 0; i < enemies.Count; i++)
+        {
+            float workingDist = Vector3.Distance(enemies[0].transform.position, pos);
+            if(workingDist < minDist)
+            {
+                enemy = i;
+                minDist = workingDist;
+            }
+        }
+
+        return enemies[enemy];
+    }
+
+    public List<GameObject> enemies = new List<GameObject>();
+
     public void SpawnEnemies(Room exclude)
     {
         for (var i = 0; i < 100; i++)
@@ -70,7 +89,7 @@ public class Level : MonoBehaviour
             }
 
             var playerPos = tileToWorldPos(toSpawnIn.center.x, toSpawnIn.center.y);
-            Instantiate(enemyPrefab, playerPos, Quaternion.identity);
+            enemies.Add(Instantiate(enemyPrefab, playerPos, Quaternion.identity));
         }
     }
 

@@ -6,7 +6,7 @@ public class MainMenu : MonoBehaviour
     public void Play()
     {
         utils.setSeed(Random.Range(int.MinValue, int.MaxValue));
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("introVid");
     }
 
     public void Quit()
