@@ -82,7 +82,7 @@ public class LevelGenerator
         {
             for (int y = 0; y < sizePixels.y; y++)
             {
-                toReturn.SetPixel(x, y, getColorFromTile(tiles[x / 16, y / 16], new vector2(x % 16, y % 16)));
+                toReturn.SetPixel(x, y, getColorFromTile(tiles[x / 16, y / 16], new vector2(x % 16, y % 16), new vector2(x / 16, y / 16)));
             }
         }
 
@@ -93,9 +93,9 @@ public class LevelGenerator
 
     vector2HashCode hs = new vector2HashCode();
 
-    private Color getColorFromTile(Tile t, vector2 pos)
+    private Color getColorFromTile(Tile t, vector2 pos, vector2 tilePos)
     {
-        utils.setSeed(System.Math.Abs(hs.GetHashCode(pos) - 1));
+        utils.setSeed(System.Math.Abs(hs.GetHashCode(tilePos) - 1));
         //utils.setSeed(hs.GetHashCode(pos));
         switch (t)
         {
