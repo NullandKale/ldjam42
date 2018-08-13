@@ -70,11 +70,11 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public int spawnChance = 20;
+    private int spawnChance = 20;
 
     private void spawnItem()
     {
-        if (utils.getIntInRange(1, 101) < spawnChance)
+        if (Random.Range(0,100) < spawnChance)
         {
             Instantiate(Level.currentLevel.itemPrefab, transform.position, Quaternion.identity);
         }
