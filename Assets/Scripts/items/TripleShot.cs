@@ -19,8 +19,8 @@ public class TripleShot : CodeBlock
         var proj2 = Object.Instantiate(proj, proj.transform.position, proj.transform.rotation * Quaternion.Euler(0, 0, -25));
         var proj3 = Object.Instantiate(proj, proj.transform.position, proj.transform.rotation * Quaternion.Euler(0, 0, 25));
 
-        PlayerController.OnShoot.Invoke(proj2, false);
-        PlayerController.OnShoot.Invoke(proj3, false);
+        PlayerController.OnShoot.Invoke(proj2, false, false);
+        PlayerController.OnShoot.Invoke(proj3, false, false);
     }
 
     public override OnX GetOnX()

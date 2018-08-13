@@ -7,7 +7,10 @@ public class Projectile : MonoBehaviour
     public float Life = 3f;
     public float Speed = 1f;
 
+    public float noCollideTime = 0;
+
     private Rigidbody2D rigidBody;
+    public CircleCollider2D c;
 
     private Vector2 SetRotation()
     {
@@ -18,6 +21,7 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        c = GetComponent<CircleCollider2D>();
 
         transform.Rotate(transform.right);
         rigidBody.AddForce(transform.right * 1000 * Speed * Time.fixedDeltaTime, ForceMode2D.Force);
@@ -30,10 +34,25 @@ public class Projectile : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        if(noCollideTime > 0)
+        {
+            noCollideTime -= Time.deltaTime;
+        }
+        else
+        {
+            c.enabled = true;
+        }
+
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        if(noCollideTime > 0)
+        {
+            return;
+        }
+
         if (other.gameObject.layer == 8)
         {
             PlayerController.Instance.Damage(this, Damage);

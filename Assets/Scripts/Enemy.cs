@@ -8,11 +8,10 @@ public class Enemy : MonoBehaviour
 
     private Rigidbody2D rigidBody;
 
-    public GameObject itemPrefab;
     public GameObject Projectile;
 
     public float FireRate = 1.0f;
-    private float currentFireRate;
+    public float currentFireRate;
 
     private void Awake()
     {
@@ -57,7 +56,7 @@ public class Enemy : MonoBehaviour
     private void die()
     {
         spawnItem();
-        PlayerController.OnEnemyKilled.Invoke();
+        PlayerController.OnEnemyKilled.Invoke(this);
         Level.currentLevel.enemies.Remove(gameObject);
         Destroy(gameObject);
     }
@@ -68,7 +67,7 @@ public class Enemy : MonoBehaviour
     {
         if (utils.getIntInRange(1, 101) < spawnChance)
         {
-            Instantiate(itemPrefab, transform.position, Quaternion.identity);
+            Instantiate(Level.currentLevel.itemPrefab, transform.position, Quaternion.identity);
         }
     }
 
@@ -83,7 +82,7 @@ public class Enemy : MonoBehaviour
 
         if (proj != null)
         {
-            PlayerController.OnEnemyHit.Invoke(proj);
+            PlayerController.OnEnemyHit.Invoke(proj.gameObject, this.gameObject);
         }
     }
 

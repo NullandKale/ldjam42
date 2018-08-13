@@ -552,6 +552,7 @@ MonoBehaviour:
     type: 2}
   popupPrefab: {fileID: 1236495346670732, guid: 08dfc436bce72c7408c75b74dd77d9c6,
     type: 2}
+  itemPrefab: {fileID: 1592492086379040, guid: 5d2c0493dd926a94fa83134c765e97f5, type: 2}
   tileCount: 100
   scale: 0.2
   roomCount: 60

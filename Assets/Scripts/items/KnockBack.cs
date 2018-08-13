@@ -1,14 +1,18 @@
-﻿[System.Serializable]
+﻿using UnityEngine;
+
+[System.Serializable]
 public class KnockBack : CodeBlock
 {
     public override string GetName()
     {
-        return "KnockBack()";
+        return "GiveMeSpace()";
     }
 
     public override void OnHeal(params object[] args)
     {
-        base.OnHeal(args);
+        GameObject g = MonoBehaviour.Instantiate(Level.currentLevel.explosionPrefab, PlayerController.Instance.gameObject.transform.position, Quaternion.identity);
+        g.transform.localScale = new Vector3(2, 2, 2);
+        g.GetComponent<SpriteRenderer>().color = Color.clear;
     }
 
     public override OnX GetOnX()

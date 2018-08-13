@@ -9,6 +9,7 @@ public class Level : MonoBehaviour
     public GameObject enemyPrefab;
     public GameObject explosionPrefab;
     public GameObject popupPrefab;
+    public GameObject itemPrefab;
 
     public static Level currentLevel;
 
@@ -60,12 +61,24 @@ public class Level : MonoBehaviour
     {
         codeBlocks = new List<CodeBlock>
         {
+            new ActiveRegen(),
+            new Adrenaline(),
             new DoubleDamage(),
+            new EnemiesExplodeOnDeath(),
             new EnemyProjectilesExplodeOnHit(),
+            new FullBackup(),
             new HealAgain(),
-            new TripleShot(),
+            new KnockBack(),
+            new LifeSteal(),
+            new LifetimeBandaidSupply(),
+            new MicroStun(),
+            new OffsiteBackup(),
+            new PartialBackup(),
             new ReflectDamage(),
-            //new KnockBack(),
+            new SphereShoot(),
+            new Split(),
+            new TripleShot(),
+            new Wait(),
         };
     }
 
@@ -191,8 +204,9 @@ public class Level : MonoBehaviour
         {
             for (var j = 0; j < gen.tiles.GetLength(1); j++)
             {
-                if (isColliding(j, i) && gen.countNeighbors(j, i, Tile.Hole) <= 6)
+                if (isColliding(j, i) /*&& gen.countNeighbors(j, i, Tile.Hole) <= 6*/)
                 {
+                    //Yes we are well aware this is shit. Magic numbers and bad stuff is here
                     var xPos = j * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
                     var yPos = i * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
                     xPos = ((float)Math.Round(xPos * 4, MidpointRounding.ToEven)) / 4f;
@@ -205,8 +219,18 @@ public class Level : MonoBehaviour
         }
     }
 
+    public Vector3 getRandomRoomCenter()
+    {
+        var toSpawnIn = gen.rooms[utils.getIntInRange(0, gen.rooms.Count)];
+        var randomVector = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        var playerPos = tileToWorldPos(toSpawnIn.center.x, toSpawnIn.center.y);
+
+        return playerPos + randomVector;
+    }
+
     public Vector3 tileToWorldPos(int x, int y)
     {
+        //Yes we are well aware this is shit. Magic numbers and bad stuff is here
         var multA = pixelsPerTile / 64f * transform.localScale.x;
         var xPos = x * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
         var yPos = y * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
@@ -224,7 +248,6 @@ public class Level : MonoBehaviour
     {
         Color.RGBToHSV(GetComponent<SpriteRenderer>().color, out h, out s, out v);
 
-        Debug.Log(h);
         h += 0.00005f;
         if (h > 1f)
         {

@@ -28,7 +28,7 @@ public sealed class PlayerController : MonoBehaviour
         }
     }
 
-    private readonly List<CodeBlock> CodeBlocks = new List<CodeBlock>();
+    public readonly List<CodeBlock> CodeBlocks = new List<CodeBlock>();
 
     public void AddBlock(CodeBlock block)
     {
@@ -49,8 +49,8 @@ public sealed class PlayerController : MonoBehaviour
     public Text KBText;
     public Text UpgradeText;
 
-    private float MaxKB = 100;
-    private float KB = 100;
+    public float MaxKB = 100;
+    public float KB = 100;
 
     public float Speed = 3f;
 
@@ -228,14 +228,38 @@ public sealed class PlayerController : MonoBehaviour
         SetRotation();
         RenderUI();
 
+        if(Input.GetKeyUp(KeyCode.Q))
+        {
+            for(int i = 0; i < CodeBlocks.Count; i++)
+            {
+                createItemFromCodeBlock(CodeBlocks[i]);
+            }
+
+            CodeBlocks.Clear();
+        }
+
         if (Input.GetMouseButton(0))
         {
             Shoot(transform);
         }
 
+        if(Time.timeScale < 1)
+        {
+            Time.timeScale = 1;
+        }
+
         if (KB <= 0)
         {
+            //DIE
         }
+    }
+
+    private Item createItemFromCodeBlock(CodeBlock b)
+    {
+        GameObject item = Instantiate(Level.currentLevel.itemPrefab, transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)), Quaternion.identity);
+        Item toReturn = item.GetComponent<Item>();
+        toReturn.Block = b;
+        return toReturn;
     }
 
     public void Shoot(Transform trans)
@@ -243,7 +267,6 @@ public sealed class PlayerController : MonoBehaviour
         if (currentFireRate > FireRate)
         {
             var proj = Instantiate(Projectile, BulletSpawn.transform.position, trans.rotation);
-            proj.GetComponent<Projectile>().shooter = gameObject;
             OnShoot.Invoke(proj, true);
             currentFireRate = 0;
         }
@@ -262,6 +285,11 @@ public sealed class PlayerController : MonoBehaviour
 
         KB -= amount;
 
+        if(KB < 0)
+        {
+            OnDie.Invoke();
+        }
+
         if (proj != null)
         {
             OnHit.Invoke(proj);
@@ -275,7 +303,14 @@ public sealed class PlayerController : MonoBehaviour
         text.color = Color.green;
         text.text = "+" + amount + "kB";
 
-        KB += amount;
+        if(KB + amount > MaxKB)
+        {
+            KB = MaxKB;
+        }
+        else
+        {
+            KB += amount;
+        }
 
         if (callEvent)
         {

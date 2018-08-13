@@ -1,4 +1,6 @@
-﻿[System.Serializable]
+﻿using UnityEngine;
+
+[System.Serializable]
 public class ReflectDamage : CodeBlock
 {
     public override string GetName()
@@ -8,13 +10,13 @@ public class ReflectDamage : CodeBlock
 
     public override void OnEnemyHit(params object[] args)
     {
-        var proj = (Projectile)args[0];
+        var proj = (GameObject)args[1];
 
-        if (proj.shooter != null)
+        if (proj != null)
         {
-            if (proj.shooter != PlayerController.Instance.gameObject)
+            if (proj != PlayerController.Instance.gameObject)
             {
-                proj.shooter.GetComponent<Enemy>().Damage(null, proj.Damage * 0.1f);
+                proj.GetComponent<Enemy>().Damage(null, 1);
             }
         }
     }
