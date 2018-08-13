@@ -239,8 +239,30 @@ public sealed class PlayerController : MonoBehaviour
         return true;
     }
 
+    private static bool IsApproximately(float fl1, float fl2, float distance)
+    {
+        return Mathf.Abs(fl1 - fl2) < distance;
+    }
+
     private void Update()
     {
+        if (IsApproximately(Time.timeScale, 1f, 0.01f) && Time.timeScale != 1)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            if (Time.timeScale < 1)
+            {
+                Time.timeScale += Time.fixedDeltaTime;
+            }
+
+            if (Time.timeScale > 1)
+            {
+                Time.timeScale -= Time.fixedDeltaTime;
+            }
+        }
+
         Movement();
         SetRotation();
         RenderUI();
