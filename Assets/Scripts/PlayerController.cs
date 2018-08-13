@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public sealed class PlayerController : MonoBehaviour
@@ -43,11 +43,14 @@ public sealed class PlayerController : MonoBehaviour
         }
     }
 
+    public AudioSource AudioSource;
     public GameObject BulletSpawn;
 
     public Image KBImage;
     public Text KBText;
     public Text UpgradeText;
+    public Text EnemiesLeft;
+    public Image Arrow;
 
     public float MaxKB = 100;
     public float KB = 100;
@@ -64,9 +67,12 @@ public sealed class PlayerController : MonoBehaviour
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        AudioSource = GetComponent<AudioSource>();
         KBImage = GameObject.Find("KBImage").GetComponent<Image>();
         KBText = GameObject.Find("KBText").GetComponent<Text>();
         UpgradeText = GameObject.Find("Blocks").GetComponent<Text>();
+        EnemiesLeft = GameObject.Find("Enemies").GetComponent<Text>();
+        Arrow = GameObject.Find("Arrow").GetComponent<Image>();
     }
 
     private Vector2 DirectionInput(KeyCode key, Vector2 vel)
@@ -90,6 +96,13 @@ public sealed class PlayerController : MonoBehaviour
         {
             rigidBody.velocity = Vector2.zero;
         }
+    }
+
+    private float SetArrowRotation()
+    {
+        return Mathf.Rad2Deg *
+               Mathf.Atan2(Level.currentLevel.GetClosestEnemy(transform.position).transform.position.y - transform.position.y,
+                   Level.currentLevel.GetClosestEnemy(transform.position).transform.position.x - transform.position.x);
     }
 
     private void SetRotation()
@@ -202,6 +215,10 @@ public sealed class PlayerController : MonoBehaviour
                             + "OnEnemyHit( " + EnemyHit[0] + ", " + EnemyHit[1] + ", " + EnemyHit[2] + " )\n"
                             + "OnEnemyKilled( " + EnemyKilled[0] + ", " + EnemyKilled[1] + ", " + EnemyKilled[2] + " )\n"
                             + "OnDie( " + Die[0] + ", " + Die[1] + ", " + Die[2] + " )";
+
+        EnemiesLeft.text = "Enemies Left: " + Level.currentLevel.enemies.Count;
+
+        Arrow.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, SetArrowRotation());
     }
 
     public bool CanPickUp(OnX x)
@@ -222,8 +239,30 @@ public sealed class PlayerController : MonoBehaviour
         return true;
     }
 
+    private static bool IsApproximately(float fl1, float fl2, float distance)
+    {
+        return Mathf.Abs(fl1 - fl2) < distance;
+    }
+
     private void Update()
     {
+        if (IsApproximately(Time.timeScale, 1f, 0.01f) && Time.timeScale != 1)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            if (Time.timeScale < 1)
+            {
+                Time.timeScale += Time.fixedDeltaTime;
+            }
+
+            if (Time.timeScale > 1)
+            {
+                Time.timeScale -= Time.fixedDeltaTime;
+            }
+        }
+
         Movement();
         SetRotation();
         RenderUI();
@@ -250,7 +289,11 @@ public sealed class PlayerController : MonoBehaviour
 
         if (KB <= 0)
         {
-            //DIE
+            SceneManager.LoadScene("Defeat");
+        }
+        else if (Level.currentLevel.enemies.Count <= 0)
+        {
+            SceneManager.LoadScene("Victory");
         }
     }
 
@@ -269,6 +312,7 @@ public sealed class PlayerController : MonoBehaviour
             var proj = Instantiate(Projectile, BulletSpawn.transform.position, trans.rotation);
             OnShoot.Invoke(proj, true);
             currentFireRate = 0;
+            AudioSource.Play();
         }
         else
         {

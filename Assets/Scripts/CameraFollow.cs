@@ -17,6 +17,28 @@ public class CameraFollow : MonoBehaviour
             Target = GameObject.FindGameObjectWithTag("Player").transform;
         }
 
-        transform.position = Target.position + Origin;
+        var pos = Target.position + Origin;
+
+        if (pos.x < -55.5f)
+        {
+            pos.x = -55.5f;
+        }
+
+        if (pos.x > 55.5f)
+        {
+            pos.x = 55.5f;
+        }
+
+        if (pos.y > 58.5f)
+        {
+            pos.y = 58.5f;
+        }
+
+        if (pos.y < -58.5f)
+        {
+            pos.y = -58.5f;
+        }
+
+        transform.position = pos;
     }
 }

@@ -24,7 +24,6 @@ public class IntroTyper : MonoBehaviour
                                + "Kill my minions and get back your bytes.\n"
                                + "But beware, the end is just the beginning.\n";
 
-    // Use this for initialization
     private void Start()
     {
         t = GetComponent<Text>();
@@ -33,13 +32,10 @@ public class IntroTyper : MonoBehaviour
 
     private IEnumerator Type()
     {
-        //source.pitch *= 1.4f;
         while (currentPos < introText.Length)
         {
             t.text += introText.ToCharArray()[currentPos];
             source.clip = keyPresses[utils.getIntInRange(0, keyPresses.Count)];
-            //source.Play();
-            //yield return new WaitForSeconds(source.clip.length * (1f / 1.6f));
             source.pitch *= 1.03f;
             source.Play();
             yield return new WaitForSeconds(source.clip.length / source.pitch);

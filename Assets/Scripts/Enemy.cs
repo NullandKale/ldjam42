@@ -6,9 +6,12 @@ public class Enemy : MonoBehaviour
 
     public float Speed = 3f;
 
+    public GameObject BulletSpawn;
+
     private Rigidbody2D rigidBody;
 
     public GameObject Projectile;
+    public AudioSource AudioSource;
 
     public float FireRate = 1.0f;
     public float currentFireRate;
@@ -16,14 +19,16 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        AudioSource = GetComponent<AudioSource>();
+        FireRate += Random.Range(-1f, 1f);
     }
 
     private void Movement()
     {
-        if (Vector3.Distance(transform.position, PlayerController.Instance.transform.position) > 2)
+        if (Vector3.Distance(transform.position, PlayerController.Instance.transform.position) > 4)
         {
-            rigidBody.velocity = Vector3.MoveTowards(transform.position, PlayerController.Instance.transform.position,
-                Speed * Time.fixedDeltaTime).normalized;
+            rigidBody.MovePosition(Vector3.MoveTowards(transform.position, PlayerController.Instance.transform.position,
+                Speed * Time.fixedDeltaTime));
         }
         else
         {
@@ -45,6 +50,10 @@ public class Enemy : MonoBehaviour
             Movement();
             SetRotation();
             Shoot(transform);
+        }
+        else
+        {
+            rigidBody.velocity = Vector2.zero;
         }
 
         if (KB <= 0)
@@ -90,8 +99,11 @@ public class Enemy : MonoBehaviour
     {
         if (currentFireRate > FireRate)
         {
-            Instantiate(Projectile, trans.position, trans.rotation).GetComponent<Projectile>().shooter = gameObject;
+            Instantiate(Projectile, BulletSpawn.transform.position, trans.rotation).
+                GetComponent<Projectile>().shooter = gameObject;
             currentFireRate = 0;
+            AudioSource.pitch = Random.Range(0.4f, 0.8f);
+            AudioSource.Play();
         }
         else
         {

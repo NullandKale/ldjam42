@@ -149,6 +149,73 @@ public class LevelGenerator
                 return Set.WallInsetTopRight;
             }
         }
+        else
+        {
+            //if (utils.isInRange(x, 1, tiles.GetLength(0) - 1) && utils.isInRange(y, 1, tiles.GetLength(1) - 1))
+            if (utils.isInRange(x, 0, tiles.GetLength(0) - 1))
+            {
+                if (tiles[x + 1, y] != Tile.Hole)
+                {
+                    return Set.WallRight;
+                }
+            }
+
+            if (utils.isInRange(x, 1, tiles.GetLength(0)))
+            {
+                if (tiles[x - 1, y] != Tile.Hole)
+                {
+                    return Set.WallLeft;
+                }
+            }
+
+            if (utils.isInRange(y, 1, tiles.GetLength(0)))
+            {
+                if (tiles[x, y - 1] != Tile.Hole)
+                {
+                    return Set.WallBottom;
+                }
+            }
+
+            if (utils.isInRange(y, 0, tiles.GetLength(0) - 1))
+            {
+                if (tiles[x, y + 1] != Tile.Hole)
+                {
+                    return Set.WallTop;
+                }
+            }
+
+            if (utils.isInRange(x, 1, tiles.GetLength(0)) && utils.isInRange(y, 1, tiles.GetLength(1)))
+            {
+                if (tiles[x - 1, y - 1] != Tile.Hole)
+                {
+                    return Set.WallInsetBottomLeft;
+                }
+            }
+
+            if (utils.isInRange(x, 0, tiles.GetLength(0) - 1) && utils.isInRange(y, 1, tiles.GetLength(1)))
+            {
+                if (tiles[x + 1, y - 1] != Tile.Hole)
+                {
+                    return Set.WallInsetBottomRight;
+                }
+            }
+
+            if (utils.isInRange(x, 1, tiles.GetLength(0)) && utils.isInRange(y, 0, tiles.GetLength(1) - 1))
+            {
+                if (tiles[x - 1, y + 1] != Tile.Hole)
+                {
+                    return Set.WallInsetTopLeft;
+                }
+            }
+
+            if (utils.isInRange(x, 0, tiles.GetLength(0) - 1) && utils.isInRange(y, 0, tiles.GetLength(1) - 1))
+            {
+                if (tiles[x + 1, y + 1] != Tile.Hole)
+                {
+                    return Set.WallInsetTopRight;
+                }
+            }
+        }
 
         return Set.WallCenter;
     }
@@ -286,13 +353,20 @@ public class LevelGenerator
             }
         }
 
-        for (var x = 0; x < sizeTiles.x; x++)
+        run = true;
+        while (run)
         {
-            for (var y = 0; y < sizeTiles.y; y++)
+            run = false;
+            for (var x = 1; x < sizeTiles.x - 1; x++)
             {
-                if (tiles[x, y] == Tile.Wall)
+                for (var y = 1; y < sizeTiles.y - 1; y++)
                 {
-                    tiles[x, y] = Tile.Hole;
+                    if (countNeighbors(x, y, Tile.Hole) <= 3
+                        && countNeighbors(x, y, Tile.Floor) > 0 && tiles[x, y] == Tile.Hole)
+                    {
+                        tiles[x, y] = Tile.Floor;
+                        run = true;
+                    }
                 }
             }
         }
@@ -302,8 +376,6 @@ public class LevelGenerator
     {
         //find all areas
         //connect closest areas together
-        //
-
         var clearAreas = new List<List<vector2>>();
         var isChecked = new HashSet<vector2>();
 
