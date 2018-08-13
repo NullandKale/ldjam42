@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Level : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class Level : MonoBehaviour
     public List<Sprite> EnergyTiles;
     public List<Sprite> WallTiles;
     public List<Sprite> FloorTiles;
-    public List<Sprite> HoleTiles;
+    public WallSplice HoleTiles;
     public List<Sprite> DoorUpTiles;
     public List<Sprite> DoorDownTiles;
 
@@ -35,7 +36,7 @@ public class Level : MonoBehaviour
 
     private void Awake()
     {
-        utils.setSeed(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+        utils.setSeed(Random.Range(int.MinValue, int.MaxValue));
         if (currentLevel == null)
         {
             currentLevel = this;
@@ -57,39 +58,39 @@ public class Level : MonoBehaviour
 
     private void initCodeBlocks()
     {
-        codeBlocks = new List<CodeBlock>();
-        codeBlocks.Add(new DoubleDamage());
-        codeBlocks.Add(new EnemyProjectilesExplodeOnHit());
-        codeBlocks.Add(new HealAgain());
-        //codeBlocks.Add(new Homing());
-        //codeBlocks.Add(new KnockBack());
-        //codeBlocks.Add(new ReflectDamage());
-        codeBlocks.Add(new TripleShot());
+        codeBlocks = new List<CodeBlock>
+        {
+            new DoubleDamage(),
+            new EnemyProjectilesExplodeOnHit(),
+            new HealAgain(),
+            new TripleShot(),
+            new ReflectDamage(),
+            //new KnockBack(),
+        };
     }
 
-    public CodeBlock getRandomCodeBlock()
+    public CodeBlock GetRandomCodeBlock()
     {
-        if(codeBlocks == null)
+        if (codeBlocks == null)
         {
             initCodeBlocks();
         }
 
-        if(codeBlocks.Count <= 0)
+        if (codeBlocks.Count <= 0)
         {
             return null;
         }
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
-            CodeBlock temp = codeBlocks[utils.getIntInRange(0, codeBlocks.Count)];
+            var temp = codeBlocks[utils.getIntInRange(0, codeBlocks.Count)];
 
-            if(utils.getIntInRange(0,100) <= temp.spawnChance())
+            if (utils.getIntInRange(0, 100) <= temp.SpawnChance())
             {
                 codeBlocks.Remove(temp);
                 return temp;
             }
         }
-
 
         return null;
     }
@@ -102,17 +103,21 @@ public class Level : MonoBehaviour
         return toSpawnIn;
     }
 
-    public GameObject getClosestEnemy(Vector3 pos)
+    public GameObject GetClosestEnemy(Vector3 pos)
     {
-        int enemy = 0;
-        float minDist = 1000000000;
-        for(int i = 0; i < enemies.Count; i++)
+        var enemy = 0;
+        var minDist = float.MaxValue;
+
+        for (var i = 0; i < enemies.Count; i++)
         {
-            float workingDist = Vector3.Distance(enemies[0].transform.position, pos);
-            if(workingDist < minDist)
+            if (enemies[i] != null)
             {
-                enemy = i;
-                minDist = workingDist;
+                var workingDist = Vector3.Distance(enemies[i].transform.position, pos);
+                if (workingDist < minDist)
+                {
+                    enemy = i;
+                    minDist = workingDist;
+                }
             }
         }
 
@@ -131,17 +136,18 @@ public class Level : MonoBehaviour
                 toSpawnIn = gen.rooms[utils.getIntInRange(0, gen.rooms.Count)];
             }
 
+            var randomVector = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
             var playerPos = tileToWorldPos(toSpawnIn.center.x, toSpawnIn.center.y);
-            enemies.Add(Instantiate(enemyPrefab, playerPos, Quaternion.identity));
+            enemies.Add(Instantiate(enemyPrefab, playerPos + randomVector, Quaternion.identity));
         }
     }
 
-    public Tile getTile(Vector2 pos)
+    public Tile GetTile(Vector2 pos)
     {
         if (spriteRect.Contains(pos))
         {
-            int xPos = (int)utils.Remap(pos.x, r.bounds.min.x, r.bounds.max.x, 0, gen.tiles.GetLength(0));
-            int yPos = (int)utils.Remap(pos.y, r.bounds.min.y, r.bounds.max.y, 0, gen.tiles.GetLength(1));
+            var xPos = (int)utils.Remap(pos.x, r.bounds.min.x, r.bounds.max.x, 0, gen.tiles.GetLength(0));
+            var yPos = (int)utils.Remap(pos.y, r.bounds.min.y, r.bounds.max.y, 0, gen.tiles.GetLength(1));
 
             return gen.tiles[xPos, yPos];
         }
@@ -151,7 +157,7 @@ public class Level : MonoBehaviour
 
     public bool isColliding(int x, int y)
     {
-        Tile t = gen.tiles[x, y];
+        var t = gen.tiles[x, y];
 
         switch (t)
         {
@@ -173,9 +179,10 @@ public class Level : MonoBehaviour
     }
 
     private Rect spriteRect;
+
     private void addTexture()
     {
-        float multA = (float)pixelsPerTile / 64f * transform.localScale.x;
+        var multA = (float)pixelsPerTile / 64f * transform.localScale.x;
         var tex = gen.generateTexture(scale, type);
         spriteRect = new Rect(0, 0, textureSize, textureSize);
         r.sprite = Sprite.Create(tex, spriteRect, new Vector2(0.5f, 0.5f), 64, 0, SpriteMeshType.FullRect, Vector4.zero);
@@ -186,12 +193,12 @@ public class Level : MonoBehaviour
             {
                 if (isColliding(j, i) && gen.countNeighbors(j, i, Tile.Hole) <= 6)
                 {
-                    float xPos = j * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
-                    float yPos = i * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+                    var xPos = j * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+                    var yPos = i * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
                     xPos = ((float)Math.Round(xPos * 4, MidpointRounding.ToEven)) / 4f;
                     yPos = ((float)Math.Round(yPos * 4, MidpointRounding.ToEven)) / 4f;
 
-                    GameObject toAdd = Instantiate(prefab, new Vector3(xPos, yPos), new Quaternion(), transform);
+                    var toAdd = Instantiate(prefab, new Vector3(xPos, yPos), new Quaternion(), transform);
                     toAdd.AddComponent<BoxCollider2D>().size = new Vector2(0.25f, 0.25f);
                 }
             }
@@ -200,12 +207,31 @@ public class Level : MonoBehaviour
 
     public Vector3 tileToWorldPos(int x, int y)
     {
-        float multA = pixelsPerTile / 64f * transform.localScale.x;
-        float xPos = x * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
-        float yPos = y * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+        var multA = pixelsPerTile / 64f * transform.localScale.x;
+        var xPos = x * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
+        var yPos = y * multA - transform.localScale.x * 10 - transform.localScale.x * 10 / 4.2f;
         xPos = ((float)Math.Round(xPos * 4, MidpointRounding.ToEven)) / 4f;
         yPos = ((float)Math.Round(yPos * 4, MidpointRounding.ToEven)) / 4f;
 
         return new Vector3(xPos, yPos);
+    }
+
+    private float h;
+    private float s;
+    private float v;
+
+    public void Update()
+    {
+        Color.RGBToHSV(GetComponent<SpriteRenderer>().color, out h, out s, out v);
+
+        Debug.Log(h);
+        h += 0.00005f;
+        if (h > 1f)
+        {
+            h = 0f;
+        }
+
+        GetComponent<SpriteRenderer>().color = Color.HSVToRGB(h, 0.2f, v);
+        Camera.main.backgroundColor = Color.HSVToRGB(h, 0.2f, v);
     }
 }

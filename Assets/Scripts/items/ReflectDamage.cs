@@ -1,22 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-[System.Serializable]
+﻿[System.Serializable]
 public class ReflectDamage : CodeBlock
 {
-    public override string getName()
+    public override string GetName()
     {
-        return "Reflect();";
+        return "Reflect()";
     }
 
     public override void OnEnemyHit(params object[] args)
     {
-        Projectile proj = (Projectile)args[0];
-        proj.shooter.GetComponent<Enemy>().KB -= (proj.Damage * 0.1f);
+        var proj = (Projectile)args[0];
+
+        if (proj.shooter != null)
+        {
+            if (proj.shooter != PlayerController.Instance.gameObject)
+            {
+                proj.shooter.GetComponent<Enemy>().Damage(null, proj.Damage * 0.1f);
+            }
+        }
     }
 
-    public override int spawnChance()
+    public override OnX GetOnX()
+    {
+        return OnX.OnEnemyHit;
+    }
+
+    public override int SpawnChance()
     {
         return 25;
     }

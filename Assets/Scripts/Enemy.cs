@@ -2,7 +2,7 @@
 
 public class Enemy : MonoBehaviour
 {
-    public float KB = 3;
+    private float KB = 3;
 
     public float Speed = 3f;
 
@@ -25,6 +25,10 @@ public class Enemy : MonoBehaviour
         {
             rigidBody.velocity = Vector3.MoveTowards(transform.position, PlayerController.Instance.transform.position,
                 Speed * Time.fixedDeltaTime).normalized;
+        }
+        else
+        {
+            rigidBody.velocity = Vector2.zero;
         }
     }
 
@@ -54,15 +58,32 @@ public class Enemy : MonoBehaviour
     {
         spawnItem();
         PlayerController.OnEnemyKilled.Invoke();
+        Level.currentLevel.enemies.Remove(gameObject);
         Destroy(gameObject);
     }
 
     public int spawnChance = 20;
+
     private void spawnItem()
     {
-        if(utils.getIntInRange(1, 101) < spawnChance)
+        if (utils.getIntInRange(1, 101) < spawnChance)
         {
             Instantiate(itemPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
+    public void Damage(Projectile proj, float amount)
+    {
+        var textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
+        var text = textobj.GetComponent<DestroyAfterDelay>().text;
+        text.color = Color.blue;
+        text.text = "-" + amount + "kB";
+
+        KB -= amount;
+
+        if (proj != null)
+        {
+            PlayerController.OnEnemyHit.Invoke(proj);
         }
     }
 

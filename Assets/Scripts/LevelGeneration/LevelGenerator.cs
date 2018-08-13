@@ -1,7 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+[System.Serializable]
+public class WallSplice
+{
+    public Sprite WallTop;
+    public Sprite WallBottom;
+    public Sprite WallRight;
+    public Sprite WallLeft;
+    public Sprite WallTopRight;
+    public Sprite WallTopLeft;
+    public Sprite WallBottomRight;
+    public Sprite WallBottomLeft;
+    public Sprite WallInsetTopRight;
+    public Sprite WallInsetTopLeft;
+    public Sprite WallInsetBottomRight;
+    public Sprite WallInsetBottomLeft;
+    public Sprite WallCenter;
+}
 
 public class LevelGenerator
 {
@@ -33,7 +50,7 @@ public class LevelGenerator
                 break;
 
             case GenerationType.Cave:
-                float[,] noise = utils.normalizeMap(Simplex.Noise.Calc2D(sizeTiles.x, sizeTiles.y, scale));
+                var noise = utils.normalizeMap(Simplex.Noise.Calc2D(sizeTiles.x, sizeTiles.y, scale));
                 tiles = noisesToTiles(noise);
                 break;
 
@@ -50,11 +67,11 @@ public class LevelGenerator
 
     private Tile[,] noisesToTiles(float[,] noise)
     {
-        Tile[,] tiles = new Tile[sizeTiles.x, sizeTiles.y];
+        var tiles = new Tile[sizeTiles.x, sizeTiles.y];
 
-        for (int x = 0; x < sizeTiles.x; x++)
+        for (var x = 0; x < sizeTiles.x; x++)
         {
-            for (int y = 0; y < sizeTiles.y; y++)
+            for (var y = 0; y < sizeTiles.y; y++)
             {
                 tiles[x, y] = noiseToTile(noise[x, y]);
             }
@@ -75,13 +92,74 @@ public class LevelGenerator
         }
     }
 
+    private Sprite Aligntiles(int x, int y, WallSplice Set)
+    {
+        if (utils.isInRange(x, 1, tiles.GetLength(0) - 1) && utils.isInRange(y, 1, tiles.GetLength(1) - 1))
+        {
+            if (tiles[x - 1, y] != Tile.Hole
+                && tiles[x, y - 1] != Tile.Hole)
+            {
+                return Set.WallBottomLeft;
+            }
+            else if (tiles[x + 1, y] != Tile.Hole
+                && tiles[x, y - 1] != Tile.Hole)
+            {
+                return Set.WallBottomRight;
+            }
+            else if (tiles[x - 1, y] != Tile.Hole
+                && tiles[x, y + 1] != Tile.Hole)
+            {
+                return Set.WallTopLeft;
+            }
+            else if (tiles[x + 1, y] != Tile.Hole
+                && tiles[x, y + 1] != Tile.Hole)
+            {
+                return Set.WallTopRight;
+            }
+            else if (tiles[x + 1, y] != Tile.Hole)
+            {
+                return Set.WallRight;
+            }
+            else if (tiles[x - 1, y] != Tile.Hole)
+            {
+                return Set.WallLeft;
+            }
+            else if (tiles[x, y - 1] != Tile.Hole)
+            {
+                return Set.WallBottom;
+            }
+            else if (tiles[x, y + 1] != Tile.Hole)
+            {
+                return Set.WallTop;
+            }
+            else if (tiles[x - 1, y - 1] != Tile.Hole)
+            {
+                return Set.WallInsetBottomLeft;
+            }
+            else if (tiles[x + 1, y - 1] != Tile.Hole)
+            {
+                return Set.WallInsetBottomRight;
+            }
+            else if (tiles[x - 1, y + 1] != Tile.Hole)
+            {
+                return Set.WallInsetTopLeft;
+            }
+            else if (tiles[x + 1, y + 1] != Tile.Hole)
+            {
+                return Set.WallInsetTopRight;
+            }
+        }
+
+        return Set.WallCenter;
+    }
+
     private Texture2D fillTexture(Tile[,] tiles)
     {
-        Texture2D toReturn = new Texture2D(sizePixels.x, sizePixels.y) { filterMode = FilterMode.Point };
+        var toReturn = new Texture2D(sizePixels.x, sizePixels.y) { filterMode = FilterMode.Point };
 
-        for (int x = 0; x < sizePixels.x; x++)
+        for (var x = 0; x < sizePixels.x; x++)
         {
-            for (int y = 0; y < sizePixels.y; y++)
+            for (var y = 0; y < sizePixels.y; y++)
             {
                 toReturn.SetPixel(x, y, getColorFromTile(tiles[x / pixelPerTile, y / pixelPerTile], new vector2(x % pixelPerTile, y % pixelPerTile),
                     new vector2(x / pixelPerTile, y / pixelPerTile)));
@@ -105,27 +183,27 @@ public class LevelGenerator
         switch (t)
         {
             case Tile.Energy:
-                Sprite e = Level.currentLevel.EnergyTiles[Rand(Level.currentLevel.EnergyTiles)];
+                var e = Level.currentLevel.EnergyTiles[Rand(Level.currentLevel.EnergyTiles)];
                 return e.texture.GetPixel(pos.x + (int)(e.rect.x), pos.y + (int)(e.rect.y));
 
             case Tile.Floor:
-                Sprite f = Level.currentLevel.FloorTiles[Rand(Level.currentLevel.FloorTiles)];
+                var f = Level.currentLevel.FloorTiles[Rand(Level.currentLevel.FloorTiles)];
                 return f.texture.GetPixel(pos.x + (int)(f.rect.x), pos.y + (int)(f.rect.y));
 
             case Tile.Hole:
-                Sprite h = Level.currentLevel.HoleTiles[Rand(Level.currentLevel.HoleTiles)];
+                var h = Aligntiles(tilePos.x, tilePos.y, Level.currentLevel.HoleTiles);
                 return h.texture.GetPixel(pos.x + (int)(h.rect.x), pos.y + (int)(h.rect.y));
 
             case Tile.Wall:
-                Sprite w = Level.currentLevel.WallTiles[Rand(Level.currentLevel.WallTiles)];
+                var w = Level.currentLevel.WallTiles[Rand(Level.currentLevel.WallTiles)];
                 return w.texture.GetPixel(pos.x + (int)(w.rect.x), pos.y + (int)(w.rect.y));
 
             case Tile.DoorUp:
-                Sprite du = Level.currentLevel.DoorUpTiles[Rand(Level.currentLevel.DoorUpTiles)];
+                var du = Level.currentLevel.DoorUpTiles[Rand(Level.currentLevel.DoorUpTiles)];
                 return du.texture.GetPixel(pos.x + (int)(du.rect.x), pos.y + (int)(du.rect.y));
 
             case Tile.DoorDown:
-                Sprite dd = Level.currentLevel.DoorDownTiles[Rand(Level.currentLevel.DoorDownTiles)];
+                var dd = Level.currentLevel.DoorDownTiles[Rand(Level.currentLevel.DoorDownTiles)];
                 return dd.texture.GetPixel(pos.x + (int)(dd.rect.x), pos.y + (int)(dd.rect.y));
         }
 
@@ -134,17 +212,17 @@ public class LevelGenerator
 
     private Tile[,] generateRooms(int roomCount)
     {
-        float[,] noise = utils.CreateMap(1f, sizeTiles.x, sizeTiles.y);
+        var noise = utils.CreateMap(1f, sizeTiles.x, sizeTiles.y);
 
         rooms = new List<Room>();
 
-        for (int i = 0; i < roomCount; i++)
+        for (var i = 0; i < roomCount; i++)
         {
-            Room working = Room.getValidRoom(sizeTiles.x, 4, 2);
+            var working = Room.getValidRoom(sizeTiles.x, 4, 2);
 
-            for (int x = -working.size.x; x < working.size.x; x++)
+            for (var x = -working.size.x; x < working.size.x; x++)
             {
-                for (int y = -working.size.y; y < working.size.y; y++)
+                for (var y = -working.size.y; y < working.size.y; y++)
                 {
                     if (utils.isInRange(working.center.x - x, sizeTiles.x) && utils.isInRange(working.center.y - y, sizeTiles.y))
                     {
@@ -158,7 +236,7 @@ public class LevelGenerator
 
         noise = utils.addBorder(noise);
 
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             noise = doFloodCheck(noise);
         }
@@ -168,13 +246,13 @@ public class LevelGenerator
 
     private void HallRemoval()
     {
-        bool run = true;
+        var run = true;
         while (run)
         {
             run = false;
-            for (int x = 1; x < sizeTiles.x - 1; x++)
+            for (var x = 1; x < sizeTiles.x - 1; x++)
             {
-                for (int y = 1; y < sizeTiles.y - 1; y++)
+                for (var y = 1; y < sizeTiles.y - 1; y++)
                 {
                     if (tiles[x, y] == Tile.Hole)
                     {
@@ -192,9 +270,9 @@ public class LevelGenerator
         while (run)
         {
             run = false;
-            for (int x = 0; x < sizeTiles.x; x++)
+            for (var x = 0; x < sizeTiles.x; x++)
             {
-                for (int y = 0; y < sizeTiles.y; y++)
+                for (var y = 0; y < sizeTiles.y; y++)
                 {
                     if (tiles[x, y] == Tile.Floor)
                     {
@@ -208,9 +286,9 @@ public class LevelGenerator
             }
         }
 
-        for (int x = 0; x < sizeTiles.x; x++)
+        for (var x = 0; x < sizeTiles.x; x++)
         {
-            for (int y = 0; y < sizeTiles.y; y++)
+            for (var y = 0; y < sizeTiles.y; y++)
             {
                 if (tiles[x, y] == Tile.Wall)
                 {
@@ -226,16 +304,16 @@ public class LevelGenerator
         //connect closest areas together
         //
 
-        List<List<vector2>> clearAreas = new List<List<vector2>>();
-        HashSet<vector2> isChecked = new HashSet<vector2>();
+        var clearAreas = new List<List<vector2>>();
+        var isChecked = new HashSet<vector2>();
 
-        vector2 firstClearArea = findFirstClearArea(map, isChecked);
+        var firstClearArea = findFirstClearArea(map, isChecked);
 
-        int counter = 0;
+        var counter = 0;
 
         while (firstClearArea.x != -1)
         {
-            List<vector2> toAdd = FloodFill(map, firstClearArea, sizeTiles.x);
+            var toAdd = FloodFill(map, firstClearArea, sizeTiles.x);
 
             isChecked.UnionWith(toAdd);
 
@@ -249,12 +327,12 @@ public class LevelGenerator
             }
         }
 
-        List<vector4> pathsToDraw = new List<vector4>();
+        var pathsToDraw = new List<vector4>();
 
-        for (int i = 0; i < clearAreas.Count; i++)
+        for (var i = 0; i < clearAreas.Count; i++)
         {
-            List<vector2> workingArea = clearAreas[i];
-            vector4 toAdd = findClosestRelatives(clearAreas, workingArea);
+            var workingArea = clearAreas[i];
+            var toAdd = findClosestRelatives(clearAreas, workingArea);
             if (toAdd != null)
             {
                 pathsToDraw.Add(toAdd);
@@ -266,11 +344,11 @@ public class LevelGenerator
 
     private float[,] drawPaths(float[,] map, List<vector4> pathsToDraw)
     {
-        for (int i = 0; i < pathsToDraw.Count; i++)
+        for (var i = 0; i < pathsToDraw.Count; i++)
         {
-            vector2 start = pathsToDraw[i].i;
-            vector2 end = pathsToDraw[i].j;
-            vector2 current = start;
+            var start = pathsToDraw[i].i;
+            var end = pathsToDraw[i].j;
+            var current = start;
 
             while ((current.x != end.x || current.y != end.y))
             {
@@ -303,30 +381,30 @@ public class LevelGenerator
     //THIS IS BAD AND I FEEL BAD
     private vector4 findClosestRelatives(List<List<vector2>> wholeAreas, List<vector2> startingArea)
     {
-        vector2 currentBestStart = new vector2(10000, 10000);
-        vector2 currentBestEnd = new vector2(10000, 10000);
-        float currentBestDist = float.MaxValue;
+        var currentBestStart = new vector2(10000, 10000);
+        var currentBestEnd = new vector2(10000, 10000);
+        var currentBestDist = float.MaxValue;
 
-        for (int i = 0; i < startingArea.Count; i++)
+        for (var i = 0; i < startingArea.Count; i++)
         {
             //happens for each tile in starting area
-            for (int k = 0; k < wholeAreas.Count; k++)
+            for (var k = 0; k < wholeAreas.Count; k++)
             {
                 if (startingArea == wholeAreas[k])
                 {
                     continue;
                 }
 
-                for (int l = 0; l < wholeAreas[k].Count; l++)
+                for (var l = 0; l < wholeAreas[k].Count; l++)
                 {
-                    bool test = false;
+                    var test = false;
 
                     if (startingArea[i].x > sizeTiles.x / 2 && wholeAreas[k][l].x > sizeTiles.x / 2)
                     {
                         test = true;
                     }
 
-                    float workingDist = Mathf.Abs(startingArea[i].squareDist(wholeAreas[k][l]));
+                    var workingDist = Mathf.Abs(startingArea[i].squareDist(wholeAreas[k][l]));
 
                     if (workingDist < currentBestDist)
                     {
@@ -347,14 +425,14 @@ public class LevelGenerator
 
     public static List<vector2> FloodFill(float[,] map, vector2 pt, int worldSize)
     {
-        HashSet<vector2> badvector2s = new HashSet<vector2>();
-        HashSet<vector2> vector2s = new HashSet<vector2>();
-        Stack<vector2> pixels = new Stack<vector2>();
+        var badvector2s = new HashSet<vector2>();
+        var vector2s = new HashSet<vector2>();
+        var pixels = new Stack<vector2>();
         pixels.Push(pt);
 
         while (pixels.Count > 0)
         {
-            vector2 a = pixels.Pop();
+            var a = pixels.Pop();
             if (a.x < worldSize - 1 && a.x > 0 && a.y < worldSize - 1 && a.y > 0)
             {
                 // make sure we stay within bounds
@@ -405,13 +483,13 @@ public class LevelGenerator
 
     private vector2 findFirstClearArea(float[,] map, HashSet<vector2> clearAreas)
     {
-        for (int x = 0; x < sizeTiles.x; x++)
+        for (var x = 0; x < sizeTiles.x; x++)
         {
-            for (int y = 0; y < sizeTiles.y; y++)
+            for (var y = 0; y < sizeTiles.y; y++)
             {
                 if (map[x, y] <= 0)
                 {
-                    vector2 pos = new vector2(x, y);
+                    var pos = new vector2(x, y);
 
                     if (!isAlreadyFound(pos, clearAreas))
                     {
@@ -436,10 +514,10 @@ public class LevelGenerator
 
     private int countNeighbors(float[,] map, int xPos, int yPos)
     {
-        int toReturn = -1;
-        for (int x = -1; x <= 1; x++)
+        var toReturn = -1;
+        for (var x = -1; x <= 1; x++)
         {
-            for (int y = -1; y <= 1; y++)
+            for (var y = -1; y <= 1; y++)
             {
                 if (utils.isInRange(xPos + x, sizeTiles.x) && utils.isInRange(yPos + y, sizeTiles.y))
                 {
@@ -456,10 +534,10 @@ public class LevelGenerator
 
     public int countNeighbors(int xPos, int yPos, Tile toFind)
     {
-        int toReturn = -1;
-        for (int x = -1; x <= 1; x++)
+        var toReturn = -1;
+        for (var x = -1; x <= 1; x++)
         {
-            for (int y = -1; y <= 1; y++)
+            for (var y = -1; y <= 1; y++)
             {
                 if (utils.isInRange(xPos + x, sizeTiles.x) && utils.isInRange(yPos + y, sizeTiles.y))
                 {
@@ -506,23 +584,14 @@ public struct Room
 
     public Room(int posMax, int roomSizeCenter, int roomSizeChange)
     {
-        center = new vector2(utils.getIntInRange(0, posMax - 2), utils.getIntInRange(0, posMax - 2));
-        if (center.x <= 2)
-        {
-            center.x++;
-        }
-        if (center.y <= 2)
-        {
-            center.y++;
-        }
-
+        center = new vector2(utils.getIntInRange(3, posMax - 3), utils.getIntInRange(3, posMax - 3));
         size = utils.getCenteredVector2(new vector2(roomSizeCenter, roomSizeCenter), roomSizeChange);
     }
 
     public static Room getValidRoom(int posMax, int roomSizeCenter, int roomSizeChange)
     {
-        Room working = new Room(posMax, roomSizeCenter, roomSizeChange);
-        for (int i = 0; i < 100; i++)
+        var working = new Room(posMax, roomSizeCenter, roomSizeChange);
+        for (var i = 0; i < 100; i++)
         {
             if (getAspectRatio(working) >= AspectRatioMin)
             {
@@ -539,12 +608,12 @@ public struct Room
 
     public static Room getValidRoomMinDist(int posMax, int roomSizeCenter, int roomSizeChange, float minSquareDist, List<Room> rooms)
     {
-        Room working = new Room(posMax, roomSizeCenter, roomSizeChange);
-        for (int i = 0; i < 10; i++)
+        var working = new Room(posMax, roomSizeCenter, roomSizeChange);
+        for (var i = 0; i < 10; i++)
         {
             if (getAspectRatio(working) >= AspectRatioMin)
             {
-                for (int j = 0; j < rooms.Count; j++)
+                for (var j = 0; j < rooms.Count; j++)
                 {
                     if (squareDist(rooms[i], working) > minSquareDist)
                     {

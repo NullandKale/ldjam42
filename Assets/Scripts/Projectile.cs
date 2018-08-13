@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 public class Projectile : MonoBehaviour
 {
@@ -37,25 +36,16 @@ public class Projectile : MonoBehaviour
     {
         if (other.gameObject.layer == 8)
         {
-            GameObject textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
-            Text text = textobj.GetComponent<DestroyAfterDelay>().text;
-            text.color = Color.red;
-            text.text = "-" + Damage + "kB";
-
-            PlayerController.Instance.KB -= Damage;
-            PlayerController.OnHit.Invoke(this);
+            PlayerController.Instance.Damage(this, Damage);
         }
         else if (other.gameObject.layer == 10)
         {
-            GameObject textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
-            Text text = textobj.GetComponent<DestroyAfterDelay>().text;
-            text.color = Color.red;
-            text.text = "-" + Damage + "kB";
-
-            other.gameObject.GetComponent<Enemy>().KB -= Damage;
-            PlayerController.OnEnemyHit.Invoke(this);
+            other.gameObject.GetComponent<Enemy>().Damage(this, Damage);
         }
 
-        Destroy(gameObject);
+        if (other.gameObject.layer != 9)
+        {
+            Destroy(gameObject);
+        }
     }
 }

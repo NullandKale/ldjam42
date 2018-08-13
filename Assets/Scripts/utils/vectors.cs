@@ -1,41 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-    public class vector4
+public class vector4
+{
+    public vector2 i;
+    public vector2 j;
+
+    public vector4()
     {
-        public vector2 i;
-        public vector2 j;
+        i = new vector2();
+        j = new vector2();
+    }
 
-        public vector4()
-        {
-            i = new vector2();
-            j = new vector2();
-        }
+    public vector4(vector2 i, vector2 j)
+    {
+        this.i = i;
+        this.j = j;
+    }
 
-        public vector4(vector2 i, vector2 j)
-        {
-            this.i = i;
-            this.j = j;
-        }
+    public vector4(int i, int j, int x, int y)
+    {
+        this.i = new vector2(i, j);
+        this.j = new vector2(x, y);
+    }
 
-        public vector4(int i, int j, int x, int y)
-        {
-            this.i = new vector2(i, j);
-            this.j = new vector2(x, y);
-        }
+    public static vector4 getSplit(vector2 pos, int chunkSize)
+    {
+        var chunkX = pos.x / chunkSize;
+        var chunkY = pos.y / chunkSize;
 
-        public static vector4 getSplit(vector2 pos, int chunkSize)
-        {
-            int chunkX = pos.x / chunkSize;
-            int chunkY = pos.y / chunkSize;
+        var tileX = pos.x % chunkSize;
+        var tileY = pos.y % chunkSize;
 
-            int tileX = pos.x % chunkSize;
-            int tileY = pos.y % chunkSize;
-
-            return new vector4(chunkX, chunkY, tileX, tileY);
-        }
+        return new vector4(chunkX, chunkY, tileX, tileY);
+    }
 
     public override string ToString()
     {
@@ -86,7 +84,7 @@ public struct vector2
 
     public static vector2 fromString(string line)
     {
-        string[] lines = line.Split(',');
+        var lines = line.Split(',');
 
         int x;
         int y;

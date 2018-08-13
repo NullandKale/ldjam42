@@ -1,69 +1,65 @@
-﻿namespace Dillyo.TheEphern.Core
+﻿using UnityEngine;
+
+/// <summary>
+/// A MonoBehavior that uses the pools.
+/// </summary>
+public class MonoPool : MonoBehaviour
 {
-    using Pooling;
-    using UnityEngine;
+    /// <summary>
+    /// The Capacity of the pool.
+    /// </summary>
+    public int Capacity;
 
     /// <summary>
-    /// A MonoBehavior that uses the pools.
+    /// The GameObject to use for the pool.
     /// </summary>
-    public class MonoPool : MonoBehaviour
+    public GameObject Prototype;
+
+    /// <summary>
+    /// Deterimines the type of pool.
+    /// </summary>
+    public PoolType Pooltype = PoolType.Queue;
+
+    /// <summary>
+    /// Tests if the pool is expandable.
+    /// </summary>
+    public bool Expandable = true;
+
+    /// <summary>
+    /// The types of pool that the MonoPool can use.
+    /// </summary>
+    public enum PoolType
     {
-        /// <summary>
-        /// The Capacity of the pool.
-        /// </summary>
-        public int Capacity;
+        Queue,
+        List
+    }
 
-        /// <summary>
-        /// The GameObject to use for the pool.
-        /// </summary>
-        public GameObject Prototype;
+    /// <summary>
+    /// The Pool that the MonoPool uses.
+    /// </summary>
+    public IPool<GameObject> Pool { get; private set; }
 
-        /// <summary>
-        /// Deterimines the type of pool.
-        /// </summary>
-        public PoolType Pooltype = PoolType.Queue;
-
-        /// <summary>
-        /// Tests if the pool is expandable.
-        /// </summary>
-        public bool Expandable = true;
-
-        /// <summary>
-        /// The types of pool that the MonoPool can use.
-        /// </summary>
-        public enum PoolType
+    /// <summary>
+    /// Unity Awake.
+    /// </summary>
+    public void Awake()
+    {
+        switch (Pooltype)
         {
-            Queue,
-            List
-        }
+            case PoolType.Queue:
+                Pool = new QueuePool<GameObject>(() => Instantiate(Prototype),
+                                                Capacity);
+                break;
 
-        /// <summary>
-        /// The Pool that the MonoPool uses.
-        /// </summary>
-        public IPool<GameObject> Pool { get; private set; }
+            case PoolType.List:
+                Pool = new ListPool<GameObject>(() => Instantiate(Prototype),
+                                                Capacity,
+                                                g => g.activeInHierarchy,
+                                                Expandable);
+                break;
 
-        /// <summary>
-        /// Unity Awake.
-        /// </summary>
-        public void Awake()
-        {
-            switch (Pooltype)
-            {
-                case PoolType.Queue:
-                    Pool = new QueuePool<GameObject>(() => Instantiate(Prototype),
-                                                    Capacity);
-                    break;
-
-                case PoolType.List:
-                    Pool = new ListPool<GameObject>(() => Instantiate(Prototype),
-                                                    Capacity,
-                                                    g => g.activeInHierarchy,
-                                                    Expandable);
-                    break;
-
-                default:
-                    return;
-            }
+            default:
+                return;
         }
     }
 }

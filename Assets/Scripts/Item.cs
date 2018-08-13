@@ -1,18 +1,16 @@
-﻿using System;
-using System.Reflection;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
-    public GameObject Text;
+    public Text Text;
 
     public CodeBlock Block;
 
     private void Start()
     {
-        Block = Level.currentLevel.getRandomCodeBlock();
-        if(Block == null)
+        Block = Level.currentLevel.GetRandomCodeBlock();
+        if (Block == null)
         {
             Destroy(gameObject);
         }
@@ -22,7 +20,8 @@ public class Item : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, PlayerController.Instance.transform.position) < 1)
         {
-            Text.SetActive(true);
+            Text.gameObject.SetActive(true);
+            Text.text = Block.GetName();
             if (Input.GetKeyDown(KeyCode.E))
             {
                 PlayerController.Instance.AddBlock(Block);
@@ -31,7 +30,7 @@ public class Item : MonoBehaviour
         }
         else
         {
-            Text.SetActive(false);
+            Text.gameObject.SetActive(false);
         }
     }
 }

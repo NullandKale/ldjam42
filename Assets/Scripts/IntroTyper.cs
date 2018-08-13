@@ -27,7 +27,6 @@ public class IntroTyper : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-
         t = GetComponent<Text>();
         StartCoroutine(Type());
     }

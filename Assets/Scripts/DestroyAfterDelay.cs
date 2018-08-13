@@ -1,15 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DestroyAfterDelay : MonoBehaviour
 {
     public float timeout;
     public Text text;
-	// Use this for initialization
-	void Start ()
+
+    private Vector2 rand()
     {
-        Destroy(this, timeout);
-	}
+        return new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+    }
+
+    private void Start()
+    {
+        GetComponent<Rigidbody2D>().velocity = rand().normalized * 4 * Time.fixedDeltaTime;
+        Destroy(gameObject, timeout);
+    }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace util
 {
@@ -26,7 +25,7 @@ namespace util
             {
                 if (File.Exists(path))
                 {
-                    string text = File.ReadAllText(path);
+                    var text = File.ReadAllText(path);
                     lines = text.Split('\n');
 
                     if (lines.Length > 0)
@@ -52,7 +51,7 @@ namespace util
 
         public void writeLinesToTerm(List<string> lines)
         {
-            for (int i = 0; i < lines.Count; i++)
+            for (var i = 0; i < lines.Count; i++)
             {
                 Console.WriteLine(lines[i]);
             }
@@ -60,15 +59,15 @@ namespace util
 
         public float[,] loadArray(vector2 size)
         {
-            float[,] data = new float[size.x, size.y];
+            var data = new float[size.x, size.y];
 
-            List<string> lines = new List<string>(Read());
+            var lines = new List<string>(Read());
 
-            for (int i = 0; i < lines.Count; i++)
+            for (var i = 0; i < lines.Count; i++)
             {
-                string[] split = lines[i].Split(',');
+                var split = lines[i].Split(',');
 
-                for (int j = 0; j < split.Length - 1; j++)
+                for (var j = 0; j < split.Length - 1; j++)
                 {
                     if (!float.TryParse(split[j], out data[i, j]))
                     {
@@ -99,7 +98,7 @@ namespace util
             {
                 using (var fileWriter = new StreamWriter(fileStream))
                 {
-                    for (int i = 0; i < lines.Count; i++)
+                    for (var i = 0; i < lines.Count; i++)
                     {
                         fileWriter.WriteLine(lines[i]);
                     }

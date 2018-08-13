@@ -1,21 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-[System.Serializable]
+﻿[System.Serializable]
 public class HealAgain : CodeBlock
 {
-    public override string getName()
+    public override string GetName()
     {
-        return "HealAgain();";
+        return "HealAgain()";
     }
 
     public override void OnHeal(params object[] args)
     {
-            PlayerController.Instance.KB += (float)args[0];
+        PlayerController.Instance.Heal((float)args[0], false);
     }
 
-    public override int spawnChance()
+    public override OnX GetOnX()
+    {
+        return OnX.OnHeal;
+    }
+
+    public override int SpawnChance()
     {
         return 10;
     }

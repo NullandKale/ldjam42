@@ -1,22 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [System.Serializable]
 public class EnemyProjectilesExplodeOnHit : CodeBlock
 {
-    public override string getName()
+    public override string GetName()
     {
-        return "Explode();";
+        return "Explode()";
     }
 
     public override void OnHit(params object[] args)
     {
-        Projectile p = (Projectile)args[0];
+        var p = (Projectile)args[0];
         MonoBehaviour.Instantiate(Level.currentLevel.explosionPrefab, p.transform.position, Quaternion.identity);
     }
 
-    public override int spawnChance()
+    public override OnX GetOnX()
+    {
+        return OnX.OnHit;
+    }
+
+    public override int SpawnChance()
     {
         return 5;
     }

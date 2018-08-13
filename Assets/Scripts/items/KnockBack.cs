@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-[System.Serializable]
+﻿[System.Serializable]
 public class KnockBack : CodeBlock
 {
-    public override string getName()
+    public override string GetName()
     {
-        return "KnockBack();";
+        return "KnockBack()";
     }
 
     public override void OnHeal(params object[] args)
@@ -15,7 +11,12 @@ public class KnockBack : CodeBlock
         base.OnHeal(args);
     }
 
-    public override int spawnChance()
+    public override OnX GetOnX()
+    {
+        return OnX.OnHeal;
+    }
+
+    public override int SpawnChance()
     {
         return 10;
     }

@@ -1,22 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [System.Serializable]
 public class DoubleDamage : CodeBlock
 {
-    public override string getName()
+    public override string GetName()
     {
         return "DoubleDamage()";
     }
 
     public override void OnShot(params System.Object[] args)
     {
-        GameObject proj = (GameObject)args[0];
+        var proj = (GameObject)args[0];
         proj.GetComponent<Projectile>().Damage *= 2;
     }
 
-    public override int spawnChance()
+    public override OnX GetOnX()
+    {
+        return OnX.OnShoot;
+    }
+
+    public override int SpawnChance()
     {
         return 50;
     }

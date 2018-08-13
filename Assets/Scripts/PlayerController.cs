@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,22 +32,25 @@ public sealed class PlayerController : MonoBehaviour
 
     public void AddBlock(CodeBlock block)
     {
-        block.Init();
-        if(block != null)
+        if (block != null)
         {
-            GameObject textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
-            Text text = textobj.GetComponent<DestroyAfterDelay>().text;
+            block.Init();
+            var textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
+            var text = textobj.GetComponent<DestroyAfterDelay>().text;
             text.color = Color.blue;
-            text.text = "+" + block.getName();
+            text.text = "+" + block.GetName();
             CodeBlocks.Add(block);
         }
     }
 
+    public GameObject BulletSpawn;
+
     public Image KBImage;
     public Text KBText;
+    public Text UpgradeText;
 
-    public float MaxKB = 100;
-    public float KB = 100;
+    private float MaxKB = 100;
+    private float KB = 100;
 
     public float Speed = 3f;
 
@@ -61,6 +66,7 @@ public sealed class PlayerController : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         KBImage = GameObject.Find("KBImage").GetComponent<Image>();
         KBText = GameObject.Find("KBText").GetComponent<Text>();
+        UpgradeText = GameObject.Find("Blocks").GetComponent<Text>();
     }
 
     private Vector2 DirectionInput(KeyCode key, Vector2 vel)
@@ -93,13 +99,134 @@ public sealed class PlayerController : MonoBehaviour
                                   Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x);
     }
 
+    private string[] codeDefault =
+    {
+        "null",
+        "null",
+        "null"
+    };
+
+    private void RenderUI()
+    {
+        KBImage.fillAmount = KB / MaxKB;
+        KBText.text = KB + " / " + MaxKB + "KB";
+        var Shot = new string[3];
+        Array.Copy(codeDefault, Shot, 3);
+        var Hit = new string[3];
+        Array.Copy(codeDefault, Hit, 3);
+        var Heal = new string[3];
+        Array.Copy(codeDefault, Heal, 3);
+        var EnemyHit = new string[3];
+        Array.Copy(codeDefault, EnemyHit, 3);
+        var EnemyKilled = new string[3];
+        Array.Copy(codeDefault, EnemyKilled, 3);
+        var Die = new string[3];
+        Array.Copy(codeDefault, Die, 3);
+
+        for (var i = 0; i < CodeBlocks.Count; i++)
+        {
+            switch (CodeBlocks[i].GetOnX())
+            {
+                case OnX.OnShoot:
+                    for (var j = 0; j < 3; j++)
+                    {
+                        if (Shot[j] == "null")
+                        {
+                            Shot[j] = CodeBlocks[i].GetName();
+                            break;
+                        }
+                    }
+
+                    break;
+
+                case OnX.OnHit:
+                    for (var j = 0; j < 3; j++)
+                    {
+                        if (Hit[j] == "null")
+                        {
+                            Hit[j] = CodeBlocks[i].GetName();
+                            break;
+                        }
+                    }
+                    break;
+
+                case OnX.OnHeal:
+                    for (var j = 0; j < 3; j++)
+                    {
+                        if (Heal[j] == "null")
+                        {
+                            Heal[j] = CodeBlocks[i].GetName();
+                            break;
+                        }
+                    }
+                    break;
+
+                case OnX.OnEnemyHit:
+                    for (var j = 0; j < 3; j++)
+                    {
+                        if (EnemyHit[j] == "null")
+                        {
+                            EnemyHit[j] = CodeBlocks[i].GetName();
+                            break;
+                        }
+                    }
+                    break;
+
+                case OnX.OnEnemyKilled:
+                    for (var j = 0; j < 3; j++)
+                    {
+                        if (EnemyKilled[j] == "null")
+                        {
+                            EnemyKilled[j] = CodeBlocks[i].GetName();
+                            break;
+                        }
+                    }
+                    break;
+
+                case OnX.OnDie:
+                    for (var j = 0; j < 3; j++)
+                    {
+                        if (Die[j] == "null")
+                        {
+                            Die[j] = CodeBlocks[i].GetName();
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        UpgradeText.text = "OnShot( " + Shot[0] + ", " + Shot[1] + ", " + Shot[2] + " )\n"
+                            + "OnHit( " + Hit[0] + ", " + Hit[1] + ", " + Hit[2] + " )\n"
+                            + "OnHeal( " + Heal[0] + ", " + Heal[1] + ", " + Heal[2] + " )\n"
+                            + "OnEnemyHit( " + EnemyHit[0] + ", " + EnemyHit[1] + ", " + EnemyHit[2] + " )\n"
+                            + "OnEnemyKilled( " + EnemyKilled[0] + ", " + EnemyKilled[1] + ", " + EnemyKilled[2] + " )\n"
+                            + "OnDie( " + Die[0] + ", " + Die[1] + ", " + Die[2] + " )";
+    }
+
+    public bool CanPickUp(OnX x)
+    {
+        var sum = 0;
+        for (var i = 0; i < CodeBlocks.Count; i++)
+        {
+            if (CodeBlocks[i].GetOnX() == x)
+            {
+                sum++;
+                if (sum >= 3)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     private void Update()
     {
         Movement();
         SetRotation();
-
-        KBImage.fillAmount = KB / MaxKB;
-        KBText.text = KB + " / " + MaxKB + "KB";
+        RenderUI();
 
         if (Input.GetMouseButton(0))
         {
@@ -115,7 +242,9 @@ public sealed class PlayerController : MonoBehaviour
     {
         if (currentFireRate > FireRate)
         {
-            OnShoot.Invoke(Instantiate(Projectile, trans.position, trans.rotation));
+            var proj = Instantiate(Projectile, BulletSpawn.transform.position, trans.rotation);
+            proj.GetComponent<Projectile>().shooter = gameObject;
+            OnShoot.Invoke(proj, true);
             currentFireRate = 0;
         }
         else
@@ -124,25 +253,44 @@ public sealed class PlayerController : MonoBehaviour
         }
     }
 
-    public void Heal(int amount)
+    public void Damage(Projectile proj, float amount)
     {
-        GameObject textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
-        Text text = textobj.GetComponent<DestroyAfterDelay>().text;
+        var textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
+        var text = textobj.GetComponent<DestroyAfterDelay>().text;
+        text.color = Color.red;
+        text.text = "-" + amount + "kB";
+
+        KB -= amount;
+
+        if (proj != null)
+        {
+            OnHit.Invoke(proj);
+        }
+    }
+
+    public void Heal(float amount, bool callEvent = true)
+    {
+        var textobj = Instantiate(Level.currentLevel.popupPrefab, transform.position, Quaternion.identity);
+        var text = textobj.GetComponent<DestroyAfterDelay>().text;
         text.color = Color.green;
         text.text = "+" + amount + "kB";
 
         KB += amount;
-        OnHeal.Invoke(amount);
+
+        if (callEvent)
+        {
+            OnHeal.Invoke(amount);
+        }
     }
 }
 
 public sealed class RemoteEvent
 {
-    public delegate void OnEvent(params System.Object[] args);
+    public delegate void OnEvent(params object[] args);
 
     public event OnEvent Event;
 
-    public void Invoke(params System.Object[] args)
+    public void Invoke(params object[] args)
     {
         if (Event != null)
         {
