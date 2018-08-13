@@ -22,7 +22,7 @@ public class Level : MonoBehaviour
     public GameObject prefab;
 
     private int textureSize;
-    private SpriteRenderer r;
+    public SpriteRenderer spriteRenderer;
     private LevelGenerator gen;
 
     public List<Sprite> EnergyTiles;
@@ -49,7 +49,7 @@ public class Level : MonoBehaviour
 
     private void Start()
     {
-        r = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         gen = new LevelGenerator(tileCount, tileCount, pixelsPerTile, roomCount);
         textureSize = tileCount * pixelsPerTile;
         addTexture();
@@ -146,8 +146,8 @@ public class Level : MonoBehaviour
     {
         if (spriteRect.Contains(pos))
         {
-            var xPos = (int)utils.Remap(pos.x, r.bounds.min.x, r.bounds.max.x, 0, gen.tiles.GetLength(0));
-            var yPos = (int)utils.Remap(pos.y, r.bounds.min.y, r.bounds.max.y, 0, gen.tiles.GetLength(1));
+            var xPos = (int)utils.Remap(pos.x, spriteRenderer.bounds.min.x, spriteRenderer.bounds.max.x, 0, gen.tiles.GetLength(0));
+            var yPos = (int)utils.Remap(pos.y, spriteRenderer.bounds.min.y, spriteRenderer.bounds.max.y, 0, gen.tiles.GetLength(1));
 
             return gen.tiles[xPos, yPos];
         }
@@ -185,7 +185,7 @@ public class Level : MonoBehaviour
         var multA = (float)pixelsPerTile / 64f * transform.localScale.x;
         var tex = gen.generateTexture(scale, type);
         spriteRect = new Rect(0, 0, textureSize, textureSize);
-        r.sprite = Sprite.Create(tex, spriteRect, new Vector2(0.5f, 0.5f), 64, 0, SpriteMeshType.FullRect, Vector4.zero);
+        spriteRenderer.sprite = Sprite.Create(tex, spriteRect, new Vector2(0.5f, 0.5f), 64, 0, SpriteMeshType.FullRect, Vector4.zero);
 
         for (var i = 0; i < gen.tiles.GetLength(0); i++)
         {
@@ -222,16 +222,15 @@ public class Level : MonoBehaviour
 
     public void Update()
     {
-        Color.RGBToHSV(GetComponent<SpriteRenderer>().color, out h, out s, out v);
+        Color.RGBToHSV(spriteRenderer.color, out h, out s, out v);
 
-        Debug.Log(h);
+        s = 0.2f;
         h += 0.00005f;
         if (h > 1f)
         {
             h = 0f;
         }
 
-        GetComponent<SpriteRenderer>().color = Color.HSVToRGB(h, 0.2f, v);
-        Camera.main.backgroundColor = Color.HSVToRGB(h, 0.2f, v);
+        spriteRenderer.color = Color.HSVToRGB(h, s, v);
     }
 }
