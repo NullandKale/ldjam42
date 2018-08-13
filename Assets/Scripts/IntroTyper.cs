@@ -37,12 +37,17 @@ public class IntroTyper : MonoBehaviour
             t.text += introText.ToCharArray()[currentPos];
             source.clip = keyPresses[utils.getIntInRange(0, keyPresses.Count)];
             source.pitch *= 1.03f;
-            source.Play();
+
+            if (!Options.Effects)
+            {
+                source.Play();
+            }
+
             yield return new WaitForSeconds(source.clip.length / source.pitch);
             currentPos++;
         }
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(0.25f);
 
         SceneManager.LoadScene("Game");
     }

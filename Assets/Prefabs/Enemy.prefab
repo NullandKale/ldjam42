@@ -133,7 +133,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 22b1d31596b10794680b1152e959994e, type: 3}
+  m_audioClip: {fileID: 8300000, guid: d2df047d789a7734794342d2ce217741, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -232,10 +232,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 3.5
   BulletSpawn: {fileID: 1253741694819096}
-  itemPrefab: {fileID: 1592492086379040, guid: 5d2c0493dd926a94fa83134c765e97f5, type: 2}
   Projectile: {fileID: 1885841753988292, guid: 00e8b8c332c69624daad3cfa9ef33516, type: 2}
+  AudioSource: {fileID: 0}
   FireRate: 20
-  spawnChance: 90
+  currentFireRate: 0
 --- !u!212 &212119568811753124
 SpriteRenderer:
   m_ObjectHideFlags: 1

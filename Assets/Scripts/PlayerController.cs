@@ -100,9 +100,17 @@ public sealed class PlayerController : MonoBehaviour
 
     private float SetArrowRotation()
     {
-        return Mathf.Rad2Deg *
-               Mathf.Atan2(Level.currentLevel.GetClosestEnemy(transform.position).transform.position.y - transform.position.y,
-                   Level.currentLevel.GetClosestEnemy(transform.position).transform.position.x - transform.position.x);
+        if (Level.currentLevel.enemies.Count > 0)
+        {
+            return Mathf.Rad2Deg *
+                   Mathf.Atan2(
+                       Level.currentLevel.GetClosestEnemy(transform.position).transform.position.y - transform.position.y,
+                       Level.currentLevel.GetClosestEnemy(transform.position).transform.position.x - transform.position.x);
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     private void SetRotation()
@@ -267,9 +275,9 @@ public sealed class PlayerController : MonoBehaviour
         SetRotation();
         RenderUI();
 
-        if(Input.GetKeyUp(KeyCode.Q))
+        if (Input.GetKeyUp(KeyCode.Q))
         {
-            for(int i = 0; i < CodeBlocks.Count; i++)
+            for (int i = 0; i < CodeBlocks.Count; i++)
             {
                 createItemFromCodeBlock(CodeBlocks[i]);
             }
@@ -282,7 +290,7 @@ public sealed class PlayerController : MonoBehaviour
             Shoot(transform);
         }
 
-        if(Time.timeScale < 1)
+        if (Time.timeScale < 1)
         {
             Time.timeScale = 1;
         }
@@ -312,7 +320,11 @@ public sealed class PlayerController : MonoBehaviour
             var proj = Instantiate(Projectile, BulletSpawn.transform.position, trans.rotation);
             OnShoot.Invoke(proj, true);
             currentFireRate = 0;
-            AudioSource.Play();
+
+            if (!Options.Effects)
+            {
+                AudioSource.Play();
+            }
         }
         else
         {
@@ -329,7 +341,7 @@ public sealed class PlayerController : MonoBehaviour
 
         KB -= amount;
 
-        if(KB < 0)
+        if (KB < 0)
         {
             OnDie.Invoke();
         }
@@ -347,7 +359,7 @@ public sealed class PlayerController : MonoBehaviour
         text.color = Color.green;
         text.text = "+" + amount + "kB";
 
-        if(KB + amount > MaxKB)
+        if (KB + amount > MaxKB)
         {
             KB = MaxKB;
         }

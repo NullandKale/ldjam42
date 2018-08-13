@@ -37,6 +37,7 @@ public class Level : MonoBehaviour
 
     private void Awake()
     {
+        Camera.main.GetComponent<AudioSource>().mute = Options.Music;
         utils.setSeed(Random.Range(int.MinValue, int.MaxValue));
         if (currentLevel == null)
         {

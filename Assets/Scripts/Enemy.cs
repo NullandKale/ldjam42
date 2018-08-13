@@ -74,7 +74,7 @@ public class Enemy : MonoBehaviour
 
     private void spawnItem()
     {
-        if (Random.Range(0,100) < spawnChance)
+        if (Random.Range(0, 100) < spawnChance)
         {
             Instantiate(Level.currentLevel.itemPrefab, transform.position, Quaternion.identity);
         }
@@ -102,8 +102,11 @@ public class Enemy : MonoBehaviour
             Instantiate(Projectile, BulletSpawn.transform.position, trans.rotation).
                 GetComponent<Projectile>().shooter = gameObject;
             currentFireRate = 0;
-            AudioSource.pitch = Random.Range(0.4f, 0.8f);
-            AudioSource.Play();
+            if (!Options.Effects)
+            {
+                AudioSource.pitch = Random.Range(0.4f, 0.8f);
+                AudioSource.Play();
+            }
         }
         else
         {

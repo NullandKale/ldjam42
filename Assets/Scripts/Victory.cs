@@ -39,7 +39,12 @@ public class Victory : MonoBehaviour
             t.text += text.ToCharArray()[currentPos];
             source.clip = keyPresses[utils.getIntInRange(0, keyPresses.Count)];
             source.pitch *= 1.03f;
-            source.Play();
+
+            if (!Options.Effects)
+            {
+                source.Play();
+            }
+
             yield return new WaitForSeconds(source.clip.length / source.pitch);
             currentPos++;
         }

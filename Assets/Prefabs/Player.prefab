@@ -133,7 +133,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 22b1d31596b10794680b1152e959994e, type: 3}
+  m_audioClip: {fileID: 8300000, guid: d2df047d789a7734794342d2ce217741, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -230,12 +230,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc8d57120712b24c99b02379c80ad66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AudioSource: {fileID: 0}
   BulletSpawn: {fileID: 1685950015273668}
   KBImage: {fileID: 0}
   KBText: {fileID: 0}
   UpgradeText: {fileID: 0}
   EnemiesLeft: {fileID: 0}
   Arrow: {fileID: 0}
+  MaxKB: 100
+  KB: 100
   Speed: 3.5
   Projectile: {fileID: 1885841753988292, guid: 3bb7e4b0d1e9909478e50f02e685a48f, type: 2}
   FireRate: 15
