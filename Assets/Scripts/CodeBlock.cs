@@ -19,6 +19,16 @@ public abstract class CodeBlock
         PlayerController.OnDie += OnDie;
     }
 
+    public void Clear()
+    {
+        PlayerController.OnShoot -= OnShot;
+        PlayerController.OnHit -= OnHit;
+        PlayerController.OnHeal -= OnHeal;
+        PlayerController.OnEnemyHit -= OnEnemyHit;
+        PlayerController.OnEnemyKilled -= OnEnemyKilled;
+        PlayerController.OnDie -= OnDie;
+    }
+
     public virtual void OnShot(params object[] args)
     {
     }

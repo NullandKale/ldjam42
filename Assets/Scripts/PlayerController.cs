@@ -310,6 +310,7 @@ public sealed class PlayerController : MonoBehaviour
         GameObject item = Instantiate(Level.currentLevel.itemPrefab, transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)), Quaternion.identity);
         Item toReturn = item.GetComponent<Item>();
         toReturn.Block = b;
+        b.Clear();
         return toReturn;
     }
 
