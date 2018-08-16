@@ -90,9 +90,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shooter: {fileID: 0}
-  Damage: 3
-  Life: 5
-  Speed: 10
+  Damage: 5
+  Life: 4
+  Speed: 13
+  noCollideTime: 0
+  c: {fileID: 0}
 --- !u!212 &212833906753453256
 SpriteRenderer:
   m_ObjectHideFlags: 1

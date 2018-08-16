@@ -11,7 +11,7 @@ public class SphereShoot : CodeBlock
 
     public override void OnShot(params object[] args)
     {
-        if (args.Length > 3 && (bool)args[2] == false)
+        if (args.Length > 2 && (bool)args[2] == true)
         {
             return;
         }
@@ -26,14 +26,14 @@ public class SphereShoot : CodeBlock
         var proj8 = Object.Instantiate(proj, proj.transform.position, proj.transform.rotation * Quaternion.Euler(0, 0, -135));
         var proj9 = Object.Instantiate(proj, proj.transform.position, proj.transform.rotation * Quaternion.Euler(0, 0, -180));
 
-        PlayerController.OnShoot.Invoke(proj2, false, false);
-        PlayerController.OnShoot.Invoke(proj3, false, false);
-        PlayerController.OnShoot.Invoke(proj4, false, false);
-        PlayerController.OnShoot.Invoke(proj5, false, false);
-        PlayerController.OnShoot.Invoke(proj6, false, false);
-        PlayerController.OnShoot.Invoke(proj7, false, false);
-        PlayerController.OnShoot.Invoke(proj8, false, false);
-        PlayerController.OnShoot.Invoke(proj9, false, false);
+        PlayerController.OnShoot.Invoke(proj2, false, true);
+        PlayerController.OnShoot.Invoke(proj3, false, true);
+        PlayerController.OnShoot.Invoke(proj4, false, true);
+        PlayerController.OnShoot.Invoke(proj5, false, true);
+        PlayerController.OnShoot.Invoke(proj6, false, true);
+        PlayerController.OnShoot.Invoke(proj7, false, true);
+        PlayerController.OnShoot.Invoke(proj8, false, true);
+        PlayerController.OnShoot.Invoke(proj9, false, true);
     }
 
     public override OnX GetOnX()

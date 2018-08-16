@@ -16,7 +16,7 @@ public class Adrenaline : CodeBlock
 
     public override OnX GetOnX()
     {
-        return OnX.OnHeal;
+        return OnX.OnEnemyKilled;
     }
 
     public override int SpawnChance()

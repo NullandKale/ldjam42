@@ -2,7 +2,7 @@
 
 public class Enemy : MonoBehaviour
 {
-    private float KB = 3;
+    private float KB = 4;
 
     public float Speed = 3f;
 

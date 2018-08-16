@@ -4,6 +4,7 @@ using UnityEngine;
 public class explode : MonoBehaviour
 {
     public List<Sprite> explosions;
+    public AudioSource AudioSource;
     public float Damage;
     public float lifeTime;
 
@@ -21,6 +22,11 @@ public class explode : MonoBehaviour
         {
             ignore.Add(other.gameObject);
             other.gameObject.GetComponent<Enemy>().Damage(null, Damage);
+            if (!Options.Effects)
+            {
+                AudioSource.pitch = Random.Range(0.4f, 0.8f);
+                AudioSource.Play();
+            }
         }
     }
 
@@ -30,6 +36,11 @@ public class explode : MonoBehaviour
         {
             ignore.Add(other.gameObject);
             other.gameObject.GetComponent<Enemy>().Damage(null, Damage);
+            if (!Options.Effects)
+            {
+                AudioSource.pitch = Random.Range(0.4f, 0.8f);
+                AudioSource.Play();
+            }
         }
     }
 }

@@ -98,18 +98,21 @@ public sealed class PlayerController : MonoBehaviour
         }
     }
 
-    private float SetArrowRotation()
+    private void SetArrowRotation()
     {
-        if (Level.currentLevel.enemies.Count > 0)
+        GameObject e = Level.currentLevel.GetClosestEnemy(transform.position);
+        if (Level.currentLevel.enemies.Count > 0 && Vector3.Distance(e.transform.position, transform.position) > 5)
         {
-            return Mathf.Rad2Deg *
-                   Mathf.Atan2(
-                       Level.currentLevel.GetClosestEnemy(transform.position).transform.position.y - transform.position.y,
-                       Level.currentLevel.GetClosestEnemy(transform.position).transform.position.x - transform.position.x);
+            Arrow.gameObject.SetActive(true);
+
+            float toSet = Mathf.Rad2Deg * Mathf.Atan2(e.transform.position.y - transform.position.y, e.transform.position.x - transform.position.x);
+
+            Arrow.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, toSet);
         }
         else
         {
-            return 0;
+            Arrow.gameObject.SetActive(false);
+
         }
     }
 
@@ -217,16 +220,16 @@ public sealed class PlayerController : MonoBehaviour
             }
         }
 
-        UpgradeText.text = "OnShot( " + Shot[0] + ", " + Shot[1] + ", " + Shot[2] + " )\n"
-                            + "OnHit( " + Hit[0] + ", " + Hit[1] + ", " + Hit[2] + " )\n"
-                            + "OnHeal( " + Heal[0] + ", " + Heal[1] + ", " + Heal[2] + " )\n"
-                            + "OnEnemyHit( " + EnemyHit[0] + ", " + EnemyHit[1] + ", " + EnemyHit[2] + " )\n"
-                            + "OnEnemyKilled( " + EnemyKilled[0] + ", " + EnemyKilled[1] + ", " + EnemyKilled[2] + " )\n"
-                            + "OnDie( " + Die[0] + ", " + Die[1] + ", " + Die[2] + " )";
+        UpgradeText.text = "OnShot ( " + Shot[0] + ", " + Shot[1] + ", " + Shot[2] + " )\n"
+                            + "OnHit ( " + Hit[0] + ", " + Hit[1] + ", " + Hit[2] + " )\n"
+                            + "OnHeal ( " + Heal[0] + ", " + Heal[1] + ", " + Heal[2] + " )\n"
+                            + "OnEnemyHit ( " + EnemyHit[0] + ", " + EnemyHit[1] + ", " + EnemyHit[2] + " )\n"
+                            + "OnEnemyKilled ( " + EnemyKilled[0] + ", " + EnemyKilled[1] + ", " + EnemyKilled[2] + " )\n"
+                            + "OnDie ( " + Die[0] + ", " + Die[1] + ", " + Die[2] + " )";
 
         EnemiesLeft.text = "Enemies Left: " + Level.currentLevel.enemies.Count;
 
-        Arrow.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, SetArrowRotation());
+        SetArrowRotation();
     }
 
     public bool CanPickUp(OnX x)
